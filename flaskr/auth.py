@@ -4,7 +4,7 @@ import datetime
 import jwt
 
 from flask import (
-    Blueprint, jsonify, g, request, session,current_app
+    Blueprint, jsonify, g, request,current_app
 )
 
 from flaskr.db import get_db
@@ -67,6 +67,7 @@ def login():
         #Token valid for 4 weeks
         token = jwt.encode({
             'user_id': user['userID'],
+            'is_admin': user['isAdmin'],
             'exp': datetime.datetime.utcnow() +datetime.timedelta(weeks=4)
         },current_app.config['SECRET_KEY'], algorithm='HS256')
         return jsonify({'token':token}), 200
@@ -95,6 +96,33 @@ def login_required(view):
                 algorithms=['HS256']
             )
             g.user = payload['user_id'] #store userid in g
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error":"Authentication token expired"}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({"error":"Invalid authentication token"}), 401
+        return view(*args,**kwargs)
+    return wrapped_view
+
+def admin_required(view):
+    @functools.wraps(view)
+    def wrapped_view(*args,**kwargs):
+        #get token
+        auth_header = request.headers.get('Authorization')
+        if auth_header is None or not auth_header.startswith("Bearer "):
+            return jsonify({"error":"Authentication token is missing"}), 401
+
+        token = auth_header.split(" ")[1]
+
+        #decode token
+        try:
+            payload = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                algorithms=['HS256']
+            )
+            g.user = payload['user_id'] #store userid in g
+            if not payload['is_admin']:
+                return jsonify({"error":"Admin access required"}), 403
         except jwt.ExpiredSignatureError:
             return jsonify({"error":"Authentication token expired"}), 401
         except jwt.InvalidTokenError:
