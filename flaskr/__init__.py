@@ -19,7 +19,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/hello')
+    @app.route('/hello') # For testing flask app
     def hello():
         return 'Hi'
     
@@ -28,5 +28,9 @@ def create_app(test_config=None):
     
     from . import auth
     app.register_blueprint(auth.bp)
+
+    from . import website
+    app.register_blueprint(website.bp)
+    app.add_url_rule('/',endpoint='index')
 
     return app
