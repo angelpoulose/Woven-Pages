@@ -1,15 +1,15 @@
 from flask import (
-    Blueprint, flash, g, redirect, request, jsonify
+    Blueprint, g, request, jsonify
 )
 from werkzeug.exceptions import abort
 
-from flaskr.auth import login_required
+from flaskr.auth import admin_required
 from flaskr.db import get_db
 
 bp = Blueprint('website',__name__)
 
-@bp.route('/book/')
-def index():
+@bp.route('/book')
+def view_book():
     db = get_db()
     books = db.execute(
         '''SELECT books.*,
@@ -34,11 +34,57 @@ def book(book_id):
         abort(404, f"Book id {book_id} doesn't exist.")
     return jsonify(dict(book))
 
-@bp.route('/book/<int:book_id>/reviews')
-def reviews(book_id):
+@bp.route('/add_book',methods=['POST'])
+@admin_required
+def add_book():
     db = get_db()
-    reviews = db.execute(
-        '''SELECT reviews.* FROM reviews WHERE reviews.book = ?''',
+    title = request.form['title']
+    author = request.form['author']
+    error = None
+    if not title:
+        error = 'Title is required'
+    elif not author:
+        error = 'Author is required'
+    
+    if error is not None:
+        return jsonify({"error": error}),400
+    
+    db.execute(
+        '''INSERT INTO books (title,author) VALUES (?,?)''',
+        (title,author)
+    )
+    db.commit()
+    return jsonify({"message": "Book added successfully"}),201
+
+@bp.route('/book/<int:book_id>/delete',methods=['DELETE'])
+@admin_required
+def delete_book(book_id):
+    db = get_db()
+    db.execute(
+        '''DELETE FROM books WHERE bookID = ?''',
         (book_id,)
-    ).fetchall()
-    return jsonify([dict(row) for row in reviews])
+    )
+    db.commit()
+    return jsonify({"message": "Book deleted successfully"}),200
+
+@bp.route('/book/<int:book_id>/update',methods=['PUT'])
+@admin_required
+def update_book(book_id):
+    db = get_db()
+    title = request.form['title']
+    author = request.form['author']
+    error = None
+    if not title:
+        error = 'Title is required'
+    elif not author:
+        error = 'Author is required'
+    
+    if error is not None:
+        return jsonify({"error": error}),400
+    
+    db.execute(
+        '''UPDATE books SET title = ?, author = ? WHERE bookID = ?''',
+        (title,author,book_id)
+    )
+    db.commit()
+    return jsonify({"message": "Book updated successfully"}),200

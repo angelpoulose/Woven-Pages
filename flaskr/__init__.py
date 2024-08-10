@@ -31,6 +31,9 @@ def create_app(test_config=None):
 
     from . import books
     app.register_blueprint(books.bp)
-    app.add_url_rule('/',endpoint='index')
+    app.add_url_rule('/',endpoint='view_book')
+
+    from . import reviews
+    app.register_blueprint(reviews.bp)
 
     return app

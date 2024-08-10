@@ -22,6 +22,7 @@ CREATE TABLE books(
 CREATE TABLE book_genre(
     book int NOT NULL,
     genre varchar(30) NOT NULL,
+    author varchar(50),
     FOREIGN KEY (book) REFERENCES books(BookID)
 );
 
