@@ -39,16 +39,21 @@ CREATE TABLE editions(
 CREATE TABLE users(
     userID int AUTO_INCREMENT PRIMARY KEY,
     username varchar(32) UNIQUE NOT NULL,
-    password_hash char(60) NOT NULL
+    password_hash char(60) NOT NULL,
+    isAdmin BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE reviews(
+    reviewID int AUTO_INCREMENT PRIMARY KEY,
+    read_status varchar(10) DEFAULT 'To Read',
     rating int DEFAULT 0,
     reviewer int NOT NULL,
     book int NOT NULL,
     user_Review varchar(1000),
     start_read Date,
     finish_read Date,
+    CHECK (read_status IN ('To Read','Reading','Read')),
+    CHECK (finish_read IS NULL OR read_status='Read'),
     CHECK (Rating>=0 AND Rating<=5),
     UNIQUE (reviewer,book),
     FOREIGN KEY (book) REFERENCES books(BookID),
