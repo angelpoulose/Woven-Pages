@@ -31,7 +31,11 @@
     ```bash
     pip install -r requirements.txt
     ```
-6. Run flask app
+6. Create database
+   ```bash
+   flask init-db
+   ```
+7. Run flask app
     ```bash
     flask run
     ```
