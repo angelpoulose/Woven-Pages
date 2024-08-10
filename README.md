@@ -1,4 +1,4 @@
-# DBMS-Project
+# Woven Pages
 - The Project is a Book Cataloguing system that helps users discover, review, and track books.
 - Users can Track what they read, and view statistics about their reading habits.
 - Users can review books and discover books based on reviews of other similar users.
