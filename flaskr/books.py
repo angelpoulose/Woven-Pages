@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, g, request, jsonify
+    Blueprint, request, jsonify
 )
 from werkzeug.exceptions import abort
 
@@ -30,9 +30,17 @@ def book(book_id):
         WHERE books.bookID = ?''',
         (book_id,)
     ).fetchone()
+    genres = db.execute(
+        '''SELECT genre FROM book_genre WHERE book = ?''',
+        (book_id,)
+    ).fetchall()
+    
     if book is None:
         abort(404, f"Book id {book_id} doesn't exist.")
-    return jsonify(dict(book))
+    
+    book = dict(book)
+    book['genres'] = [genre['genre'] for genre in genres]
+    return jsonify(book)
 
 @bp.route('/add_book',methods=['POST'])
 @admin_required
@@ -41,6 +49,7 @@ def add_book():
     title = request.form['title']
     author = request.form['author']
     error = None
+    genres = request.form.getlist('genres')
     if not title:
         error = 'Title is required'
     elif not author:
@@ -53,6 +62,17 @@ def add_book():
         '''INSERT INTO books (title,author) VALUES (?,?)''',
         (title,author)
     )
+
+    book_id = db.execute(
+        '''SELECT bookID FROM books WHERE title = ? AND author = ?''',
+        (title,author)
+    ).fetchone()['bookID']
+
+    for genre in genres:
+        db.execute(
+            '''INSERT INTO book_genre (book,genre) VALUES (?,?)''',
+            (book_id,genre)
+        )
     db.commit()
     return jsonify({"message": "Book added successfully"}),201
 
@@ -64,6 +84,10 @@ def delete_book(book_id):
         '''DELETE FROM books WHERE bookID = ?''',
         (book_id,)
     )
+    db.execute(
+        '''DELETE FROM book_genre WHERE book = ?''',
+        (book_id,)
+    )
     db.commit()
     return jsonify({"message": "Book deleted successfully"}),200
 
@@ -73,6 +97,7 @@ def update_book(book_id):
     db = get_db()
     title = request.form['title']
     author = request.form['author']
+    genres = request.form.getlist('genres')
     error = None
     if not title:
         error = 'Title is required'
@@ -86,5 +111,14 @@ def update_book(book_id):
         '''UPDATE books SET title = ?, author = ? WHERE bookID = ?''',
         (title,author,book_id)
     )
+    db.execute(
+        '''DELETE FROM book_genre WHERE book = ?''',
+        (book_id,)
+    )
+    for genre in genres:
+        db.execute(
+            '''INSERT INTO book_genre (book,genre) VALUES (?,?)''',
+            (book_id,genre)
+        )
     db.commit()
     return jsonify({"message": "Book updated successfully"}),200

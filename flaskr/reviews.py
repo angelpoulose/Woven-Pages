@@ -63,6 +63,10 @@ def update_review(book_id):
     user_id = g.user['userID']
     rating = request.form['rating']
     comment = request.form['comment']
+    original_values = db.execute(
+        '''SELECT * FROM reviews WHERE book = ? AND reviewer = ?''',
+        (book_id,user_id)
+    ).fetchone()
 
     error = None
     if not rating:
@@ -75,6 +79,10 @@ def update_review(book_id):
     if error is not None:
         return jsonify({"error": error}),400
     
+    for key in request.form.keys():
+        if request.form[key] is None:
+            request.form[key] = original_values[key]
+
     db.execute(
         '''UPDATE reviews SET rating = ?, user_Review = ?
         WHERE book = ? AND reviewer = ?''',
