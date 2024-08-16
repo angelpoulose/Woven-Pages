@@ -67,19 +67,11 @@ INSERT INTO editions (ISBN, book, format, pages, publisher, lang) VALUES
 ("0140449175",11,"Paperback",864,"Penguin Classics","English");
 
 INSERT INTO users (username, password_hash, isAdmin) VALUES
-('admin', b'$2b$12$wxzEft97eQoo/fs/1vuaCOLRNeiZHEXDAIXlgKcseS3NhXQlCfn.6', TRUE),
-('user', b'$2b$12$RGVHZElZBSsM.tAbUbQP1.HgwJJSZgD3lJZCXgK13g9Dl8KFhsmxu', FALSE);
+('admin', '$2b$12$wxzEft97eQoo/fs/1vuaCOLRNeiZHEXDAIXlgKcseS3NhXQlCfn.6', TRUE),
+('user', '$2b$12$RGVHZElZBSsM.tAbUbQP1.HgwJJSZgD3lJZCXgK13g9Dl8KFhsmxu', FALSE);
 -- User password: MarioLuigi
 
 INSERT INTO reviews (read_status, rating, reviewer, book, user_Review, start_read, finish_read) VALUES
-('To Read', 0, 2, 1, 'I want to read this book', NULL, NULL),
-('To Read', 0, 2, 2, 'I want to read this book', NULL, NULL),
-('To Read', 0, 2, 3, 'I want to read this book', NULL, NULL),
-('To Read', 0, 2, 4, 'I want to read this book', NULL, NULL),
-('To Read', 0, 2, 5, 'I want to read this book', NULL, NULL),
-('To Read', 0, 2, 6, 'I want to read this book', NULL, NULL),
-('To Read', 0, 2, 7, 'I want to read this book', NULL, NULL),
-('To Read', 0, 2, 8, 'I want to read this book', NULL, NULL),
 ('To Read', 0, 2, 9, 'I want to read this book', NULL, NULL),
 ('To Read', 0, 2, 10, 'I want to read this book', NULL, NULL),
 ('To Read', 0, 2, 11, 'I want to read this book', NULL, NULL),
@@ -88,14 +80,6 @@ INSERT INTO reviews (read_status, rating, reviewer, book, user_Review, start_rea
 ('Read', 3, 2, 3, 'I didn''t like this book', '2021-01-01', '2021-01-10'),
 ('Read', 2, 2, 4, 'I hated this book', '2021-01-01', '2021-01-10'),
 ('Read', 1, 2, 5, 'I despised this book', '2021-01-01', '2021-01-10'),
-('Currently Reading', 0, 2, 1, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 2, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 3, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 4, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 5, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 6, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 7, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 8, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 9, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 10, 'I am currently reading this book', '2021-01-01', NULL),
-('Currently Reading', 0, 2, 11, 'I am currently reading this book', '2021-01-01', NULL);
+('Reading', 0, 2, 6, 'I am currently reading this book', '2021-01-01', NULL),
+('Reading', 0, 2, 7, 'I am currently reading this book', '2021-01-01', NULL),
+('Reading', 0, 2, 8, 'I am currently reading this book', '2021-01-01', NULL);

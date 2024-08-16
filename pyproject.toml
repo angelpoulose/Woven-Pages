@@ -1,0 +1,12 @@
+[project]
+name = "flaskr"
+version = "1.0.0"
+description = "A Book Cataloging website"
+dependencies = [
+    "flask",
+    "bcrypt",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
