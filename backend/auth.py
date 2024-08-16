@@ -7,7 +7,7 @@ from flask import (
     Blueprint, jsonify, g, request,current_app
 )
 
-from flaskr.db import get_db
+from backend.db import get_db
 
 def hash_password(password): 
     salt = bcrypt.gensalt()

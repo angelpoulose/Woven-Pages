@@ -1,5 +1,5 @@
 [project]
-name = "flaskr"
+name = "backend"
 version = "1.0.0"
 description = "A Book Cataloging website"
 dependencies = [
