@@ -26,7 +26,7 @@ CREATE TABLE book_genre(
 );
 
 CREATE TABLE editions(
-    ISBN int PRIMARY KEY,
+    ISBN varchar(20) PRIMARY KEY,
     book int NOT NULL,
     format varchar(15) NOT NULL,
     pages int,
@@ -39,7 +39,7 @@ CREATE TABLE editions(
 CREATE TABLE users(
     userID int AUTO_INCREMENT PRIMARY KEY,
     username varchar(32) UNIQUE NOT NULL,
-    password_hash char(60) NOT NULL,
+    password_hash BINARY(60) NOT NULL,
     isAdmin BOOLEAN DEFAULT FALSE
 );
 
