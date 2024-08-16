@@ -21,58 +21,63 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register',methods=['POST'])
 def register():
-    username = request.form['username']
-    password = request.form['password']
+    username =  request.form.get('username')
+    password =  request.form.get('password')
     db = get_db()
     error = None
+    code = 400
 
     if not username:
         error = 'Username is required'
-        code = 400
     elif not password:
-        error = 'password is required'
-        code = 400
+        error = 'Password is required'
     
     if error is None:
         try:
             db.execute(
-                "INSERT INTO users (username,password_hash) VALUES (%s,%s)"\
-                % (username,hash_password(password))
+                "INSERT INTO users (username,password_hash) VALUES (?,?)",
+                (username,hash_password(password))
             )
             db.commit()
-        except db.Integrityerror: #Unique constraint
-            error = "User %s is already registered" % (username)
-            code = 408
+        except db.IntegrityError: #Unique constraint
+            error = "User is already registered"
+            code = 409
         else:
             return jsonify({"message": "User registered successfully"}),201
     return jsonify({"error": error}),code
 
 @bp.route('/login',methods=['POST'])
 def login():
-    username = request.form['username']
-    password = request.form['password']
+    username =  request.form.get('username')
+    password =  request.form.get('password')
 
     db = get_db()
     error = None
+    code = None
     user = db.execute(
-        "SELECT * FROM users WHERE username = %s" % (username)
+        "SELECT * FROM users WHERE username = ?",(username,)
     ).fetchone()
-
     if user is None:
         error = "Invalid username"
-    elif not check_password(user['password_hash'],password):
-        error = "Incorrect password"
+        code = 404
+    else:
+        hash = user['password_hash']
+        if (type(hash)==str):
+            hash = hash.encode('utf-8')
+        if not check_password(hash,password):
+            error = "Incorrect password"
+            code = 401
     
     if error is None:
         #Token valid for 4 weeks
         token = jwt.encode({
-            'user_id': user['userID'],
+            'username': user['username'],
             'is_admin': user['isAdmin'],
             'exp': datetime.datetime.utcnow() +datetime.timedelta(weeks=4)
         },current_app.config['SECRET_KEY'], algorithm='HS256')
         return jsonify({'token':token}), 200
 
-    return jsonify({"error":error}), 401
+    return jsonify({"error":error}), code
 
 @bp.route('/logout',methods=['POST'])
 def logout():
@@ -95,7 +100,7 @@ def login_required(view):
                 current_app.config['SECRET_KEY'],
                 algorithms=['HS256']
             )
-            g.user = payload['user_id'] #store userid in g
+            g.user = payload['username'] #store userid in g
         except jwt.ExpiredSignatureError:
             return jsonify({"error":"Authentication token expired"}), 401
         except jwt.InvalidTokenError:
@@ -120,7 +125,7 @@ def admin_required(view):
                 current_app.config['SECRET_KEY'],
                 algorithms=['HS256']
             )
-            g.user = payload['user_id'] #store userid in g
+            g.user = payload['username'] #store userid in g
             if not payload['is_admin']:
                 return jsonify({"error":"Admin access required"}), 403
         except jwt.ExpiredSignatureError:
