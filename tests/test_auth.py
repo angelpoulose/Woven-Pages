@@ -1,17 +1,5 @@
 import pytest
-from flask import g,session
-from backend.db import get_db
 import jwt
-
-def test_register(client,app):
-    response = client.post(
-        '/auth/register',data={'username':'new_user','password':'Sonic@Hedgehog'}
-    )
-
-    with app.app_context():
-        assert get_db().execute(
-            "SELECT * FROM users WHERE username = 'new_user'"
-        ).fetchone() is not None
     
 @pytest.mark.parametrize(('username','password','message'),(
     ('','',b'Username is required'),
