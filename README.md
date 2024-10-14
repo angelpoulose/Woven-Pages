@@ -15,17 +15,17 @@
 
 3. Create virtual environment
     ```bash
-    python -m venv <venv_name>
+    python -m venv venv
     ```
 
 4. Activate virtual environment
     -   Linux:
     ```bash
-    source <venv_name>/bin/activate
+    source venv/bin/activate
     ```
     - Windows
     ```
-    <venv name>\Scripts\activate
+    venv\Scripts\activate
     ```
 5. Install dependencies
     ```bash
