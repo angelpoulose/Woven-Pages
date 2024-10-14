@@ -8,7 +8,7 @@ from backend.db import get_db
 bp = Blueprint('reviews',__name__)
 
 
-@bp.route('/book/<int:book_id>/view_reviews')
+@bp.route('/api/book/<int:book_id>/view_reviews')
 def view_reviews(book_id):
     db = get_db()
     reviews = db.execute(
@@ -17,7 +17,7 @@ def view_reviews(book_id):
     ).fetchall()
     return jsonify([dict(row) for row in reviews])
 
-@bp.route('/book/<int:book_id>/review',methods=['POST'])
+@bp.route('/api/book/<int:book_id>/review',methods=['POST'])
 @login_required
 def review(book_id):
     db = get_db()
@@ -44,7 +44,7 @@ def review(book_id):
     db.commit()
     return jsonify({"message": "Review added successfully"}),201
 
-@bp.route('/book/<int:book_id>/review',methods=['DELETE'])
+@bp.route('/api/book/<int:book_id>/review',methods=['DELETE'])
 @login_required
 def delete_review(book_id):
     db = get_db()
@@ -56,7 +56,7 @@ def delete_review(book_id):
     db.commit()
     return jsonify({"message": "Review deleted successfully"}),200
 
-@bp.route('/book/<int:book_id>/review',methods=['PUT'])
+@bp.route('/api/book/<int:book_id>/review',methods=['PUT'])
 @login_required
 def update_review(book_id):
     db = get_db()

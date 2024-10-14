@@ -19,7 +19,7 @@ def check_password(hash,password):
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-@bp.route('/register',methods=['POST'])
+@bp.route('/api/register',methods=['POST'])
 def register():
     username =  request.form.get('username')
     password =  request.form.get('password')
@@ -48,7 +48,7 @@ def register():
             return jsonify({"message": "User registered successfully"}),201
     return jsonify({"error": error}),code
 
-@bp.route('/login',methods=['POST'])
+@bp.route('/api/login',methods=['POST'])
 def login():
     username =  request.form.get('username')
     password =  request.form.get('password')
@@ -83,7 +83,7 @@ def login():
 
     return jsonify({"error":error}), code
 
-@bp.route('/logout',methods=['POST'])
+@bp.route('/api/logout',methods=['POST'])
 def logout():
     return jsonify({"message":"Logged out successfully"}), 200
 

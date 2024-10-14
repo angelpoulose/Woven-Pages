@@ -8,7 +8,7 @@ from backend.db import get_db
 
 bp = Blueprint('website',__name__)
 
-@bp.route('/book/<int:book_id>/editions',methods=['GET'])
+@bp.route('/api/book/<int:book_id>/editions',methods=['GET'])
 def get_editions(book_id):
     db = get_db()
     editions = db.execute(
@@ -16,7 +16,7 @@ def get_editions(book_id):
     ).fetchall()
     return jsonify(editions)
 
-@bp.route('/edition/<int:edition_id>',methods=['GET'])
+@bp.route('/api/edition/<int:edition_id>',methods=['GET'])
 def get_edition(edition_id):
     db = get_db()
     edition = db.execute(
@@ -26,7 +26,7 @@ def get_edition(edition_id):
         abort(404,f"Edition id {edition_id} doesn't exist.")
     return jsonify(edition)
 
-@bp.route('/edition/add',methods=['POST'])
+@bp.route('/api/edition/add',methods=['POST'])
 @admin_required
 def add_edition():
     db = get_db()
@@ -38,7 +38,7 @@ def add_edition():
     db.commit()
     return jsonify({'message':'Edition added'})
 
-@bp.route('/edition/<int:edition_id>/update',methods=['PUT'])
+@bp.route('/api/edition/<int:edition_id>/update',methods=['PUT'])
 @admin_required
 def update_edition(edition_id):
     db = get_db()
@@ -56,7 +56,7 @@ def update_edition(edition_id):
     db.commit()
     return jsonify({'message':'Edition updated'})
 
-@bp.route('/edition/<int:edition_id>/delete',methods=['DELETE'])
+@bp.route('/api/edition/<int:edition_id>/delete',methods=['DELETE'])
 @admin_required
 def delete_edition(edition_id):
     db = get_db()
