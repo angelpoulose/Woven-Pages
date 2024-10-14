@@ -8,7 +8,7 @@ from backend.db import get_db
 
 bp = Blueprint('website',__name__)
 
-@bp.route('/api/book')
+@bp.route('/book')
 def view_book():
     db = get_db()
     books = db.execute(
@@ -20,7 +20,7 @@ def view_book():
     #convert rows to a list of dictionaries
     return jsonify([dict(row) for row in books])
 
-@bp.route('/api/book/<int:book_id>')
+@bp.route('/book/<int:book_id>')
 def book(book_id):
     db = get_db()
     book = db.execute(
@@ -42,7 +42,7 @@ def book(book_id):
     book['genres'] = [genre['genre'] for genre in genres]
     return jsonify(book)
 
-@bp.route('/api/add_book',methods=['POST'])
+@bp.route('/add_book',methods=['POST'])
 @admin_required
 def add_book():
     db = get_db()
@@ -76,7 +76,7 @@ def add_book():
     db.commit()
     return jsonify({"message": "Book added successfully"}),201
 
-@bp.route('/api/book/<int:book_id>/delete',methods=['DELETE'])
+@bp.route('/book/<int:book_id>/delete',methods=['DELETE'])
 @admin_required
 def delete_book(book_id):
     db = get_db()
@@ -91,7 +91,7 @@ def delete_book(book_id):
     db.commit()
     return jsonify({"message": "Book deleted successfully"}),200
 
-@bp.route('/api/book/<int:book_id>/update',methods=['PUT'])
+@bp.route('/book/<int:book_id>/update',methods=['PUT'])
 @admin_required
 def update_book(book_id):
     db = get_db()
