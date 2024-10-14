@@ -74,6 +74,8 @@ def login():
         #Token valid for 4 weeks
         token = jwt.encode({
             'username': user['username'],
+            'name': user['name_'],
+            'dob': user['dob'],
             'is_admin': user['isAdmin'],
             'exp': datetime.datetime.now(datetime.UTC) +datetime.timedelta(weeks=4)
         },current_app.config['SECRET_KEY'], algorithm='HS256')
