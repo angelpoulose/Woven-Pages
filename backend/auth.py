@@ -23,6 +23,8 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def register():
     username =  request.form.get('username')
     password =  request.form.get('password')
+    name = request.form.get('name')
+    dob = request.form.get('dob')
     db = get_db()
     error = None
     code = 400
@@ -35,8 +37,8 @@ def register():
     if error is None:
         try:
             db.execute(
-                "INSERT INTO users (username,password_hash) VALUES (?,?)",
-                (username,hash_password(password))
+                "INSERT INTO users (username,password_hash,name_,dob) VALUES (?,?)",
+                (username,hash_password(password),name,dob)
             )
             db.commit()
         except db.IntegrityError: #Unique constraint
