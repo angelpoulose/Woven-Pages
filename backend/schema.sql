@@ -38,8 +38,8 @@ CREATE TABLE editions(
 
 CREATE TABLE users(
     userID int AUTO_INCREMENT PRIMARY KEY,
-    name_ varchar(50) NOT NULL,
-    dob DATE;
+    name_ varchar(50),
+    dob DATE,
     username varchar(32) UNIQUE NOT NULL,
     password_hash BINARY(60) NOT NULL,
     isAdmin BOOLEAN DEFAULT FALSE

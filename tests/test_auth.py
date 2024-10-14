@@ -1,16 +1,18 @@
 import pytest
 import jwt
     
-@pytest.mark.parametrize(('username','password','message'),(
-    ('','',b'Username is required'),
-    ('a','',b'Password is required'),
-    ('user','MarioLuigi',b'User is already registered'),
-    ('abc','def',b'User registered successfully')
+@pytest.mark.parametrize(('username','password','name','dob','message'),(
+    ('','','','',b'Username is required'),
+    ('a','','','',b'Password is required'),
+    ('user','MarioLuigi','','',b'Name is required'),
+    ('user','MarioLuigi','John Doe','',b'Date of birth is required'),
+    ('user','MarioLuigi','John Doe','1990-01-01',b'User is already registered'),
+    ('abc','def','Jane Doe','1992-02-02',b'User registered successfully')
 ))
-def test_register_validate_input(client,username,password,message):
+def test_register_validate_input(client,username,password,name,dob,message):
     response = client.post(
         '/auth/register',
-        data = {'username':username,'password':password}
+        data = {'username':username,'password':password,'name':name,'dob':dob}
     )
     assert message in response.data
 

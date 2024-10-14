@@ -24,7 +24,7 @@ def register():
     username =  request.form.get('username')
     password =  request.form.get('password')
     name = request.form.get('name')
-    dob = request.form.get('dob')
+    dob = request.form.get('dob') 
     db = get_db()
     error = None
     code = 400
@@ -33,11 +33,15 @@ def register():
         error = 'Username is required'
     elif not password:
         error = 'Password is required'
+    elif not name:
+        error = 'Name is required'
+    elif not dob:
+        error = 'Date of birth is required'
     
     if error is None:
         try:
             db.execute(
-                "INSERT INTO users (username,password_hash,name_,dob) VALUES (?,?)",
+                "INSERT INTO users (username,password_hash,name_,dob) VALUES (?,?,?,?)",
                 (username,hash_password(password),name,dob)
             )
             db.commit()
