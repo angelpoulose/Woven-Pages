@@ -61,7 +61,3 @@ CREATE TABLE reviews(
     FOREIGN KEY (book) REFERENCES books(BookID),
     FOREIGN KEY (reviewer) REFERENCES users(UserID)
 );
-
-INSERT INTO users
-(username, password_hash, isAdmin) VALUES
-('admin', '$2b$12$maBkAyvQpaQ/iEc0QZ466O5TMKsQoBZHUyHQIrjqyCLqbfdeyg5pm', TRUE);

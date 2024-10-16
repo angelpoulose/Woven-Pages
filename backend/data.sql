@@ -67,7 +67,7 @@ INSERT INTO editions (ISBN, book, format, pages, publisher, lang) VALUES
 ("0140449175",11,"Paperback",864,"Penguin Classics","English");
 
 INSERT INTO users (username, password_hash, isAdmin) VALUES
-('admin', '$2b$12$wxzEft97eQoo/fs/1vuaCOLRNeiZHEXDAIXlgKcseS3NhXQlCfn.6', TRUE),
+('admin', '$2b$12$maBkAyvQpaQ/iEc0QZ466O5TMKsQoBZHUyHQIrjqyCLqbfdeyg5pm', TRUE),
 ('user', '$2b$12$RGVHZElZBSsM.tAbUbQP1.HgwJJSZgD3lJZCXgK13g9Dl8KFhsmxu', FALSE);
 -- User password: MarioLuigi
 
