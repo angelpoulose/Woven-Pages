@@ -2,6 +2,9 @@
 "use client";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
+import axios from "axios";
+import Router from "next/router";
+import cookies from "js-cookie";
 import "react-datepicker/dist/react-datepicker.css"; // Import datepicker styles
 
 export default function Auth() {
@@ -12,6 +15,7 @@ export default function Auth() {
     password: "",
     dateOfBirth: null, // Use null for Date object
   });
+  const [error, setError] = useState(""); // State to handle errors
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,13 +28,35 @@ export default function Auth() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
-    console.log(formData);
-    // Reset form data if necessary
-    if (isLogin) {
-      // Handle login submission logic
-    } else {
-      // Handle signup submission logic
+    const formDataToSend = new FormData();
+    formDataToSend.append('username', formData.email);
+    formDataToSend.append('password', formData.password);
+    if (!isLogin) {
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('dob', formData.dateOfBirth);
     }
+
+    const url = isLogin ? 'http://localhost:5000/auth/login' : 'http://localhost:5000/auth/register';
+
+    axios.post(url, formDataToSend, {
+      headers: {
+      'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(response => {
+      if ((isLogin && response.status !== 200) || (!isLogin && response.status !== 201)) {
+      setError(response.data.msg || (isLogin ? "Login failed" : "Registration failed"));
+      return;
+      }
+      if (!isLogin) {
+        alert("Registration successful");
+      } else {
+        cookies.set('token', response.data.token, { path: '/' });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
   };
 
   return (

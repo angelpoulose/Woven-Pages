@@ -21,6 +21,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register',methods=['POST'])
 def register():
+    print(request.form)
     username =  request.form.get('username')
     password =  request.form.get('password')
     name = request.form.get('name')
@@ -73,15 +74,12 @@ def login():
         if not check_password(hash,password):
             error = "Incorrect password"
             code = 401
-    
+        print(user)
     if error is None:
         #Token valid for 4 weeks
         token = jwt.encode({
-            'username': user['username'],
-            'name': user['name_'],
-            'dob': user['dob'],
-            'is_admin': user['isAdmin'],
-            'exp': datetime.datetime.now(datetime.UTC) +datetime.timedelta(weeks=4)
+            'userID': user['userID'],
+            'is_admin': user['isAdmin']
         },current_app.config['SECRET_KEY'], algorithm='HS256')
         return jsonify({'token':token}), 200
 
