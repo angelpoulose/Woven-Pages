@@ -1,6 +1,5 @@
 import functools
 import bcrypt
-import datetime
 import jwt
 
 from flask import (
