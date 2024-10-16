@@ -31,6 +31,7 @@ def init_db_command():
     # Clear the exisiting data and create new tables
     init_db()
     click.echo('Initialized the database')
+    db = get_db()
 
 def init_app(app):
     app.teardown_appcontext(close_db) # call close_db when cleaning up

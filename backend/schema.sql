@@ -6,30 +6,30 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS reviews;
 
 CREATE TABLE authors(
-    authorID int AUTO_INCREMENT PRIMARY KEY,
+    authorID integer PRIMARY KEY,
     first_name varchar(50),
     last_name varchar(50),
     about varchar(1000)
 );
 
 CREATE TABLE books(
-    bookID int AUTO_INCREMENT PRIMARY KEY,
+    bookID integer PRIMARY KEY,
     title varchar(100) NOT NULL,
     author INT,
     FOREIGN KEY (author) REFERENCES authors(AuthorID)
 );
 
 CREATE TABLE book_genre(
-    book int NOT NULL,
+    book integer NOT NULL,
     genre varchar(30) NOT NULL,
     FOREIGN KEY (book) REFERENCES books(BookID)
 );
 
 CREATE TABLE editions(
     ISBN varchar(20) PRIMARY KEY,
-    book int NOT NULL,
+    book integer NOT NULL,
     format varchar(15) NOT NULL,
-    pages int,
+    pages integer,
     publisher varchar(50),
     publish_date DATE,
     lang varchar(20),
@@ -37,7 +37,7 @@ CREATE TABLE editions(
 );
 
 CREATE TABLE users(
-    userID int AUTO_INCREMENT PRIMARY KEY,
+    userID integer PRIMARY KEY,
     name_ varchar(50),
     dob DATE,
     username varchar(32) UNIQUE NOT NULL,
@@ -46,11 +46,11 @@ CREATE TABLE users(
 );
 
 CREATE TABLE reviews(
-    reviewID int AUTO_INCREMENT PRIMARY KEY,
+    reviewID integer PRIMARY KEY,
     read_status varchar(10) DEFAULT 'To Read',
-    rating int DEFAULT 0,
-    reviewer int NOT NULL,
-    book int NOT NULL,
+    rating integer DEFAULT 0,
+    reviewer integer NOT NULL,
+    book integer NOT NULL,
     user_Review varchar(1000),
     start_read Date,
     finish_read Date,

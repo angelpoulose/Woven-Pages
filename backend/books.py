@@ -15,7 +15,7 @@ def view_book():
         '''SELECT books.*,
         AVG(reviews.rating) AS average_rating
         FROM books JOIN reviews ON books.bookID = reviews.book
-        GROUP BY books.bookID ORDER BY average_rating DESC'''
+        GROUP BY books.bookID ORDER BY average_rating DESC LIMIT 10'''
     ).fetchall()
     #convert rows to a list of dictionaries
     return jsonify([dict(row) for row in books])
