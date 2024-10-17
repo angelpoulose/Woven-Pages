@@ -51,6 +51,7 @@ export default function Auth() {
         alert("Registration successful");
       } else {
         cookies.set('token', response.data.token, { path: '/' });
+        alert("Login successful");
       }
     })
     .catch(error => {

@@ -25,7 +25,11 @@ def register():
     username =  request.form.get('username')
     password =  request.form.get('password')
     name = request.form.get('name')
-    dob = request.form.get('dob') 
+    dob = request.form.get('dob')
+    try:
+        dob = datetime.datetime.strptime(dob, '%a %b %d %Y %H:%M:%S GMT%z (%Z)').date()
+    except ValueError:
+        return jsonify({"error": "Invalid date format"}), 400
     db = get_db()
     error = None
     code = 400
@@ -74,7 +78,6 @@ def login():
         if not check_password(hash,password):
             error = "Incorrect password"
             code = 401
-        print(user)
     if error is None:
         #Token valid for 4 weeks
         token = jwt.encode({
