@@ -14,7 +14,7 @@ export default function Auth() {
   useEffect(() => {
     axios.get('http://localhost:5000/book')
     .then(response => {
-      setBookList(response.data); //author,average_rating,bookID,title
+      setBookList(response.data); //author,average_rating,bookID,title,author_name
     })
     .catch(error => {
       console.log(error);
@@ -72,7 +72,7 @@ export default function Auth() {
                   className="w-44 h-64 object-cover rounded-lg shadow-md"
                 />
                 <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
-                <p className="text-sm text-gray-500">{book.author}</p>
+                <p className="text-sm text-gray-500">{book.author_name}</p>
               </div>
             ))
           ) : (

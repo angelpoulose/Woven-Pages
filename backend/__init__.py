@@ -37,4 +37,7 @@ def create_app(test_config=None):
     from . import reviews
     app.register_blueprint(reviews.bp)
 
+    from . import author
+    app.register_blueprint(author.bp)
+
     return app

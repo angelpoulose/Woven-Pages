@@ -15,7 +15,7 @@ export default function Book() {
         if (id) {
             axios.get(`http://localhost:5000/book/${id}`)
                 .then(response => {
-                    setBook(response.data); //author, average_rating, bookID, title, genre(list)
+                    setBook(response.data); //author, average_rating, bookID, title, genre(list),author_name
                 })
                 .catch(error => {
                     console.log(error);
@@ -32,7 +32,7 @@ export default function Book() {
                     </Head>
                     <main>
                         <h1>{book.title}</h1>
-                        <p><strong>Author:</strong> {book.author}</p>
+                        <a href = {`/author/${book.author}`}><strong>Author:</strong> {book.author_name}</a>
                         <p>
                             <strong>Genre:</strong>
                             {book.genres.map((genre, index) => (

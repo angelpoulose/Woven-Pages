@@ -13,9 +13,13 @@ def view_book():
     db = get_db()
     books = db.execute(
         '''SELECT books.*,
+        authors.first_name || ' ' || authors.last_name AS author_name,
         AVG(reviews.rating) AS average_rating
-        FROM books JOIN reviews ON books.bookID = reviews.book
-        GROUP BY books.bookID ORDER BY average_rating DESC LIMIT 10'''
+        FROM books
+        JOIN reviews ON books.bookID = reviews.book
+        JOIN authors ON books.author = authors.authorID
+        GROUP BY books.bookID, authors.first_name, authors.last_name
+        ORDER BY average_rating DESC LIMIT 10'''
     ).fetchall()
     #convert rows to a list of dictionaries
     return jsonify([dict(row) for row in books])
@@ -25,8 +29,11 @@ def book(book_id):
     db = get_db()
     book = db.execute(
         '''SELECT books.*,
+        authors.first_name || ' ' || authors.last_name AS author_name,
         AVG(reviews.rating) AS average_rating
-        FROM books JOIN reviews ON books.bookID = reviews.book
+        FROM books
+        JOIN reviews ON books.bookID = reviews.book
+        JOIN authors ON books.author = authors.authorID
         WHERE books.bookID = ?''',
         (book_id,)
     ).fetchone()
