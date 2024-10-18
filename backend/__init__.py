@@ -40,4 +40,7 @@ def create_app(test_config=None):
     from . import author
     app.register_blueprint(author.bp)
 
+    from . import editions
+    app.register_blueprint(editions.bp)
+
     return app
