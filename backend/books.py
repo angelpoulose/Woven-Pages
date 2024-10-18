@@ -49,7 +49,10 @@ def add_book():
     title = request.form['title']
     author = request.form['author']
     error = None
-    genres = request.form.getlist('genres')
+    try:
+        genres = request.form.getlist('genres')
+    except KeyError:
+        genres = []
     if not title:
         error = 'Title is required'
     elif not author:
