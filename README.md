@@ -39,3 +39,8 @@
     ```bash
     flask run
     ```
+8. Run frontend
+   ```bash
+   cd frontend
+   npm run dev
+   ```
