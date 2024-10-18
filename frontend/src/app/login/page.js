@@ -4,6 +4,7 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import axios from "axios";
 import cookies from "js-cookie";
+import { useRouter } from "next/navigation"; // Import useRouter
 import "react-datepicker/dist/react-datepicker.css"; // Import datepicker styles
 
 export default function Auth() {
@@ -15,6 +16,7 @@ export default function Auth() {
     dateOfBirth: null, // Use null for Date object
   });
   const [error, setError] = useState(""); // State to handle errors
+  const router = useRouter(); // Initialize useRouter for navigation
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,23 +41,28 @@ export default function Auth() {
 
     axios.post(url, formDataToSend, {
       headers: {
-      'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data',
       },
     })
     .then(response => {
       if ((isLogin && response.status !== 200) || (!isLogin && response.status !== 201)) {
-      setError(response.data.msg || (isLogin ? "Login failed" : "Registration failed"));
-      return;
+        setError(response.data.msg || (isLogin ? "Login failed" : "Registration failed"));
+        return;
       }
       if (!isLogin) {
         alert("Registration successful");
+        setIsLogin(true);
       } else {
         cookies.set('token', response.data.token, { path: '/' });
         alert("Login successful");
+        // After successful login or registration, redirect to another page (e.g., /dashboard)
+        router.push('/'); // Replace '/dashboard' with the actual path of the page you want to navigate to
       }
+
     })
     .catch(error => {
       console.log(error);
+      setError("An error occurred. Please try again.");
     });
   };
 
@@ -120,6 +127,7 @@ export default function Auth() {
           {isLogin ? "Log In" : "Sign Up"}
         </button>
       </form>
+      {error && <p className="text-red-500 mt-4">{error}</p>}
     </div>
   );
 }
