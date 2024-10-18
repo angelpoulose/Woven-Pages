@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from 'js-cookie'
-import Router from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function addBook() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const router = useRouter();
   const [formDataToSend,setFormData] = useState({
     'title':"",
     'author':"",
@@ -21,7 +22,8 @@ export default function addBook() {
     setSuccess('');
       const token = Cookies.get('token');
       if (!token) {
-        Router.push('/login');
+        alert("You aren't logged in");
+        router.push('/login');
         return;
       }
       axios.post('http://localhost:5000/add_book',
@@ -40,8 +42,12 @@ export default function addBook() {
         setSuccess('Book added successfully');
         alert('Book added')
       }).catch((error) => {
-        setError('Failed to add book');
-        alert(error)
+        if (error.response && error.response.status === 403) {
+          alert('Admin access required');
+        } else {
+          setError('Failed to add book');
+          alert(error.message || 'An error occurred');
+        }
       });
     
   };
@@ -64,8 +70,8 @@ export default function addBook() {
           <input type="text" id="title" name="title" required onChange={handleChange} />
         </div>
         <div>
-          <label htmlFor="author">Author:</label>
-          <input type="text" id="author" name="author" required onChange={handleChange} />
+          <label htmlFor="author">Author ID:</label>
+          <input type="number" id="author" name="author" required onChange={handleChange} />
         </div>
         <div>
           <label>Genres:</label>
