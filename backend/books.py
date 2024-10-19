@@ -98,6 +98,12 @@ def delete_book(book_id):
         '''DELETE FROM book_genre WHERE book = ?''',
         (book_id,)
     )
+    db.execute(
+        "DELETE FROM editions WHERE book = ?",(book_id,)
+    )
+    db.execute(
+        "DELETE FROM reviews WHERE book = ?",(book_id,)
+    )
     db.commit()
     return jsonify({"message": "Book deleted successfully"}),200
 
@@ -107,8 +113,7 @@ def update_book(book_id):
     db = get_db()
     title = request.form['title']
     author = request.form['author']
-    genres = request.form.getlist('genres')
-    print(book_id,title,author,genres)
+    genres = request.form.getlist('genres[]')
     error = None
     if not title:
         error = 'Title is required'

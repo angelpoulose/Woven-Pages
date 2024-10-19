@@ -34,47 +34,51 @@ export default function Book() {
     return (
         <div>
             {book ? (
-                <>
-                    <Head>
-                        <title>{book.title} - Book Details</title>
-                    </Head>
-                    <main>
-                        <h1>{book.title}</h1>
-                        <a href={`/author/${book.author}`}><strong>Author:</strong> {book.author_name}</a>
-                        <p>
-                            <strong>Genre:</strong>
-                            {book.genres.map((genre, index) => (
-                                <span key={index}>{genre} </span>
-                            ))}
-                        </p>
-                        <p><strong>Average Rating:</strong> {book.average_rating}</p>
-                        <h2>Editions</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ISBN</th>
-                                    <th>Format</th>
-                                    <th>Language</th>
-                                    <th>Pages</th>
-                                    <th>Publication Date</th>
-                                    <th>Publisher</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {editionList.map(edition => (
-                                    <tr key={edition.ISBN}>
-                                        <td>{edition.ISBN || '-'}</td>
-                                        <td>{edition.format || '-'}</td>
-                                        <td>{edition.language || '-'}</td>
-                                        <td>{edition.pages || '-'}</td>
-                                        <td>{edition.publication_date || '-'}</td>
-                                        <td>{edition.publisher || '-'}</td>
-                                    </tr>
+                book.title ? (
+                    <>
+                        <Head>
+                            <title>{book.title} - Book Details</title>
+                        </Head>
+                        <main>
+                            <h1>{book.title}</h1>
+                            <a href={`/author/${book.author}`}><strong>Author:</strong> {book.author_name}</a>
+                            <p>
+                                <strong>Genre:</strong>
+                                {book.genres.map((genre, index) => (
+                                    <span key={index}>{genre} </span>
                                 ))}
-                            </tbody>
-                        </table>
-                    </main>
-                </>
+                            </p>
+                            <p><strong>Average Rating:</strong> {book.average_rating}</p>
+                            <h2>Editions</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ISBN</th>
+                                        <th>Format</th>
+                                        <th>Language</th>
+                                        <th>Pages</th>
+                                        <th>Publication Date</th>
+                                        <th>Publisher</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {editionList.map(edition => (
+                                        <tr key={edition.ISBN}>
+                                            <td>{edition.ISBN || '-'}</td>
+                                            <td>{edition.format || '-'}</td>
+                                            <td>{edition.language || '-'}</td>
+                                            <td>{edition.pages || '-'}</td>
+                                            <td>{edition.publication_date || '-'}</td>
+                                            <td>{edition.publisher || '-'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </main>
+                    </>
+                ) : (
+                    <p>Book doesn't exist</p>
+                )
             ) : (
                 <p>Loading...</p>
             )}
