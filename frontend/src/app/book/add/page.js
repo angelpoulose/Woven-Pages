@@ -5,8 +5,6 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/navigation';
 
 export default function addBook() {
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const router = useRouter();
   const [formDataToSend,setFormData] = useState({
     'title':"",

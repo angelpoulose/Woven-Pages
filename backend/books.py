@@ -108,6 +108,7 @@ def update_book(book_id):
     title = request.form['title']
     author = request.form['author']
     genres = request.form.getlist('genres')
+    print(book_id,title,author,genres)
     error = None
     if not title:
         error = 'Title is required'
