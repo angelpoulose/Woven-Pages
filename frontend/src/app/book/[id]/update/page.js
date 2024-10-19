@@ -50,7 +50,6 @@ const UpdateBookPage = () => {
             router.push('/login');
             return;
         }
-
         // Update the book data
         axios.put(`http://localhost:5000/book/${id}/update`,
             book,

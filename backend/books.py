@@ -30,9 +30,9 @@ def book(book_id):
     book = db.execute(
         '''SELECT books.*,
         authors.first_name || ' ' || authors.last_name AS author_name,
-        AVG(reviews.rating) AS average_rating
+        COALESCE(AVG(reviews.rating), 0) AS average_rating
         FROM books
-        JOIN reviews ON books.bookID = reviews.book
+        LEFT JOIN reviews ON books.bookID = reviews.book
         JOIN authors ON books.author = authors.authorID
         WHERE books.bookID = ?''',
         (book_id,)
@@ -53,19 +53,19 @@ def book(book_id):
 @admin_required
 def add_book():
     db = get_db()
-    title = request.form['title']
-    author = request.form['author']
+    title = request.form.get('title')
+    author = request.form.get('author')
     error = None
     try:
-        genres = request.form.getlist('genres')
+        genres = request.form.getlist('genre[]')
     except KeyError:
         genres = []
     if not title:
         error = 'Title is required'
     elif not author:
         error = 'Author is required'
-    
     if error is not None:
+        print(error)
         return jsonify({"error": error}),400
     
     db.execute(

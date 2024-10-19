@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 
 export default function addBook() {
   const router = useRouter();
+  const [error,setError] = useState("");
+  const [success,setSuccess] = useState("");
   const [formDataToSend,setFormData] = useState({
     'title':"",
     'author':"",
