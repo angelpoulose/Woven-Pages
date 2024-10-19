@@ -134,7 +134,7 @@ def admin_required(view):
                 current_app.config['SECRET_KEY'],
                 algorithms=['HS256']
             )
-            g.user = payload['username'] #store userid in g
+            g.user = payload['userID'] #store userid in g
             if not payload['is_admin']:
                 return jsonify({"error":"Admin access required"}), 403
         except jwt.ExpiredSignatureError:

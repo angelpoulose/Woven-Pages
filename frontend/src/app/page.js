@@ -14,7 +14,7 @@ export default function Home() {
   useEffect(() => {
     axios.get('http://localhost:5000/book')
     .then(response => {
-      setBookList(response.data); //author,average_rating,bookID,title
+      setBookList(response.data); //author,average_rating,bookID,title,author_name
     })
     .catch(error => {
       console.log(error);
@@ -67,7 +67,7 @@ export default function Home() {
         <div className="flex space-x-6 overflow-x-auto pb-4">
           {bookList.length > 0 ? (
             bookList.map((book, index) => (
-            <a href = {`book/${book.bookID}`}>
+              <a href={`/book/${book.bookID}`}>
                 <div key={index} className="flex-shrink-0 w-44 text-center transition transform hover:scale-105">
                   <img
                     src={book.image_url}
@@ -75,7 +75,7 @@ export default function Home() {
                     className="w-44 h-64 object-cover rounded-lg shadow-md"
                   />
                   <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
-                  <p className="text-sm text-gray-500">{book.author}</p>
+                  <p className="text-sm text-gray-500">{book.author_name}</p>
                 </div>
               </a>
             ))
