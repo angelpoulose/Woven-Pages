@@ -5,7 +5,7 @@ import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css"; // Import datepicker styles
 import { useRouter } from "next/navigation"; // Import useRouter
 
-export default function Auth() {
+export default function Home() {
   const [bookList, setBookList] = useState([]);
   const [toReadBooks,setToRead] = useState([]); //To read has to be added
 
@@ -43,15 +43,17 @@ export default function Auth() {
         <div className="flex space-x-6 overflow-x-auto pb-4">
           {toReadBooks.length > 0 ? (
             toReadBooks.map((book, index) => (
-              <div key={index} className="flex-shrink-0 w-44 text-center transition transform hover:scale-105">
-                <img
-                  src={book.image_url} // Assuming `image_url` is correct for toReadBooks
-                  alt={book.title}
-                  className="w-44 h-64 object-cover rounded-lg shadow-md"
-                />
-                <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
-                <p className="text-sm text-gray-500">{book.author}</p>
-              </div>
+              <a href = {`/book/${book.bookID}`}>
+                <div key={index} className="flex-shrink-0 w-44 text-center transition transform hover:scale-105">
+                  <img
+                    src={book.image_url} // Assuming `image_url` is correct for toReadBooks
+                    alt={book.title}
+                    className="w-44 h-64 object-cover rounded-lg shadow-md"
+                  />
+                  <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
+                  <p className="text-sm text-gray-500">{book.author}</p>
+                </div>
+              </a>
             ))
           ) : (
             <p className="text-gray-400">Loading...</p>
@@ -65,15 +67,17 @@ export default function Auth() {
         <div className="flex space-x-6 overflow-x-auto pb-4">
           {bookList.length > 0 ? (
             bookList.map((book, index) => (
-              <div key={index} className="flex-shrink-0 w-44 text-center transition transform hover:scale-105">
-                <img
-                  src={book.image_url}
-                  alt={book.title}
-                  className="w-44 h-64 object-cover rounded-lg shadow-md"
-                />
-                <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
-                <p className="text-sm text-gray-500">{book.author}</p>
-              </div>
+            <a href = {`book/${book.bookID}`}>
+                <div key={index} className="flex-shrink-0 w-44 text-center transition transform hover:scale-105">
+                  <img
+                    src={book.image_url}
+                    alt={book.title}
+                    className="w-44 h-64 object-cover rounded-lg shadow-md"
+                  />
+                  <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
+                  <p className="text-sm text-gray-500">{book.author}</p>
+                </div>
+              </a>
             ))
           ) : (
             <p className="text-gray-400">Loading...</p>
