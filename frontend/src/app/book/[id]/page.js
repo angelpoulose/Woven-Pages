@@ -10,6 +10,7 @@ export default function Book() {
     const id = searchParams.get('id') || (typeof window !== 'undefined' ? window.location.pathname.split('/').pop() : null);
     const [book, setBook] = useState(null);
     const [editionList, setEditionList] = useState([]);
+    const [reviews, setReviews] = useState([]);
 
     // Fetch data for the specific book
     useEffect(() => {
@@ -20,6 +21,14 @@ export default function Book() {
                     axios.get(`http://localhost:5000/book/${id}/editions`)
                         .then(response => {
                             setEditionList(response.data);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                    axios.get(`http://localhost:5000/book/${id}/view_reviews`)
+                        .then(response => {
+                            setReviews(response.data);
+                            console.log(response.data);
                         })
                         .catch(error => {
                             console.log(error);
@@ -74,6 +83,16 @@ export default function Book() {
                                     ))}
                                 </tbody>
                             </table>
+                            <h2>Reviews</h2>
+                            <ul>
+                                {reviews.map(review => (
+                                    <li key={review.reviewID}>
+                                        <a href={`/user/${review.reviewer}`}>{review.username}</a>
+                                        <p>Rating: {review.rating}</p>
+                                        <p>{review.user_Review}</p>
+                                    </li>
+                                ))}
+                            </ul>
                         </main>
                     </>
                 ) : (
