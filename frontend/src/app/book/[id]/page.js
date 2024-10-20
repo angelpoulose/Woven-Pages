@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default function Book() {
     const searchParams = useSearchParams();
@@ -11,6 +12,7 @@ export default function Book() {
     const [book, setBook] = useState(null);
     const [editionList, setEditionList] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [review, setReview] = useState(null);
 
     // Fetch data for the specific book
     useEffect(() => {
@@ -28,7 +30,6 @@ export default function Book() {
                     axios.get(`http://localhost:5000/book/${id}/view_reviews`)
                         .then(response => {
                             setReviews(response.data);
-                            console.log(response.data);
                         })
                         .catch(error => {
                             console.log(error);
@@ -37,6 +38,20 @@ export default function Book() {
                 .catch(error => {
                     console.log(error);
                 });
+            const token = Cookies.get('token');
+            axios.get(`http://localhost:5000/book/${id}/view_user_review`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then (response => {
+                setReview(response.data);
+            }).catch(error => {
+                if (error.response && error.response.status === 404) {
+                    setReview(null);
+                } else {
+                    console.log(error);
+                }
+            });
         }
     }, [id]);
 
@@ -83,14 +98,24 @@ export default function Book() {
                                     ))}
                                 </tbody>
                             </table>
+                            {review ? (
+                                <>
+                                    <h2>Your Review</h2>
+                                    <p>Rating: {review.rating}</p>
+                                    <p>{review.user_Review}</p>
+                                    <a href={`/book/${id}/review`}>Edit Review</a>
+                                </>
+                            ) : (
+                                <a href={`/book/${id}/review`}>Write a Review</a>
+                            )}
                             <h2>Reviews</h2>
                             <ul>
                                 {reviews.map(review => (
-                                    <li key={review.reviewID}>
+                                    <ul>
                                         <a href={`/user/${review.reviewer}`}>{review.username}</a>
                                         <p>Rating: {review.rating}</p>
                                         <p>{review.user_Review}</p>
-                                    </li>
+                                    </ul>
                                 ))}
                             </ul>
                         </main>

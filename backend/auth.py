@@ -109,7 +109,7 @@ def login_required(view):
                 current_app.config['SECRET_KEY'],
                 algorithms=['HS256']
             )
-            g.user = payload['username'] #store userid in g
+            g.user = payload['userID'] #store userid in g
         except jwt.ExpiredSignatureError:
             return jsonify({"error":"Authentication token expired"}), 401
         except jwt.InvalidTokenError:

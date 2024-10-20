@@ -17,11 +17,25 @@ def view_reviews(book_id):
     ).fetchall()
     return jsonify([dict(row) for row in reviews])
 
+@bp.route('/book/<int:book_id>/view_user_review')
+@login_required
+def view_user_review(book_id):
+    db = get_db()
+    print(g.user)
+    user_id = g.user
+    review = db.execute(
+        '''SELECT * FROM reviews WHERE book = ? AND reviewer = ?''',
+        (book_id,user_id)
+    ).fetchone()
+    if not review:
+        return jsonify({"error": "Review not found"}),404
+    return jsonify(dict(review))
+
 @bp.route('/book/<int:book_id>/review',methods=['POST'])
 @login_required
 def review(book_id):
     db = get_db()
-    user_id = g.user['userID']
+    user_id = g.user
     rating = request.form['rating']
     comment = request.form['comment']
 
@@ -43,6 +57,18 @@ def review(book_id):
     )
     db.commit()
     return jsonify({"message": "Review added successfully"}),201
+
+@bp.route('/user/<int:user_id>/review',methods=['GET'])
+def user_review(user_id):
+    db = get_db()
+    reviews = db.execute(
+        '''SELECT reviews.*, books.title
+        FROM reviews JOIN books
+        ON reviews.book = books.bookID
+        WHERE reviews.reviewer = ?''',
+        (user_id,)
+    ).fetchall()
+    return jsonify([dict(row) for row in reviews])
 
 @bp.route('/book/<int:book_id>/review',methods=['DELETE'])
 @login_required
