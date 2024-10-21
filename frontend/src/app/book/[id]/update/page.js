@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import Cookies from 'js-cookie';
+import {useRouter} from 'next/navigation'
 
 const UpdateBookPage = () => {
     const searchParams = useSearchParams();
@@ -12,6 +13,7 @@ const UpdateBookPage = () => {
         author: '',
         genres: [],
     });
+    const router = useRouter();
 
     useEffect(() => {
         // Fetch the book data when the component mounts
@@ -52,7 +54,11 @@ const UpdateBookPage = () => {
         }
         // Update the book data
         axios.put(`http://localhost:5000/book/${id}/update`,
-            book,
+            {
+                'title': book.title,
+                'author': book.author,
+                'genres': book.genres
+            },
             {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -62,11 +68,41 @@ const UpdateBookPage = () => {
             )
             .then(response => {
                 alert('Book updated successfully!');
+                router.push(`/book/${id}`)
             })
             .catch(error => {
                 console.error('There was an error updating the book!', error);
-            });
+                alert('There was an error updating the book!');
+            }
+        );
     };
+
+    const deleteBook = () => {
+        const token = Cookies.get('token');
+        if (!token) {
+            alert("You aren't logged in");
+            router.push('/login');
+            return;
+        }
+        // Delete the book
+        axios.delete(`http://localhost:5000/book/${id}/delete`,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+            )
+            .then(response => {
+                alert('Book deleted successfully!');
+                router.push(`/`)
+            })
+            .catch(error => {
+                console.error('There was an error deleting the book!', error);
+                alert('There was an error deleting the book!');
+            }
+        );
+    }
 
     return (
         <div>
@@ -101,6 +137,7 @@ const UpdateBookPage = () => {
                 </div>
                 <button type="submit">Update Book</button>
             </form>
+            <button onClick={deleteBook}>Delete Book</button>
         </div>
     );
 };
