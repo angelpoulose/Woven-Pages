@@ -10,6 +10,7 @@ export default function Book() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id') || (typeof window !== 'undefined' ? window.location.pathname.split('/').pop() : null);
     const [reviewList,setReviewList] = useState([])
+    const [user,setUser] = useState(null)
 
     // Fetch data for the specific book
     useEffect(() => {
@@ -21,11 +22,28 @@ export default function Book() {
             .catch(error => {
                 console.error(error);
             })
+            axios.get(`http://localhost:5000/user/${id}/info`)
+            .then(response =>{
+                setUser(response.data);
+                console.log(response.data);
+            })
+            .catch(error =>{
+                console.error(error);
+            })
         }
     }, [id]);
 
     return (
         <div>
+            {user? (
+                <div>
+                    <h2>User info:</h2>
+                    {user.name_? <p><strong>User: </strong>{user.name_}</p>:<span></span>}
+                    {user.isAdmin ? <p>Admin User</p> : <p>Regular User</p>}
+                </div>
+            ):(
+                <p>Loading User info...</p>
+            )}
             {reviewList ? (
                 // Replace true with condition to check if user exists
                 (true ? (
@@ -60,7 +78,7 @@ export default function Book() {
                     <p>The user doesn't exist</p>
                 ))
             ) : (
-                <p>Loading...</p>
+                <p>Loading reviews...</p>
             )}
         </div>
     );
