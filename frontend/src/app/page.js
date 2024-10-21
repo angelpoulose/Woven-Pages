@@ -34,9 +34,6 @@ export default function Home() {
           <a href="/books" className="text-white hover:text-indigo-400 transition duration-300">
             BOOKS
           </a>
-          <a href="/authors" className="text-white hover:text-indigo-400 transition duration-300">
-            AUTHORS
-          </a>
         </div>
 
         {/* Add Book Button and Profile Icon */}
