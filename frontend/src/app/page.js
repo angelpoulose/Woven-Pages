@@ -5,7 +5,7 @@ import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css"; // Import datepicker styles
 import { useRouter } from "next/navigation"; // Import useRouter
 
-export default function Auth() {
+export default function Home() {
   const [bookList, setBookList] = useState([]);
   const [toReadBooks,setToRead] = useState([]); //To read has to be added
 

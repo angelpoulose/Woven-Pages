@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-export default function Book() {
+export default function User() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id') || (typeof window !== 'undefined' ? window.location.pathname.split('/').pop() : null);
     const [reviewList,setReviewList] = useState([])
