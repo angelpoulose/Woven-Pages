@@ -30,11 +30,14 @@ export default function Home() {
           <a href="/books" className="text-white hover:text-indigo-400 transition duration-300">BOOKS</a>
           <a href="/authors" className="text-white hover:text-indigo-400 transition duration-300">AUTHORS</a>
         </div>
-        <input
-          type="text"
-          placeholder="Search"
-          className="bg-gray-800 border border-gray-600 p-2 text-white rounded-md w-64 placeholder-gray-500 focus:outline-none focus:border-indigo-500"
-        />
+
+        {/* Add Book Button */}
+        <button
+          onClick={() => router.push("/book/add")}
+          className="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300 shadow-lg"
+        >
+          Add Book
+        </button>
       </nav>
 
       {/* "To Read" Section */}
