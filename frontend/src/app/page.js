@@ -6,6 +6,8 @@ import "react-datepicker/dist/react-datepicker.css"; // Import datepicker styles
 import { useRouter } from "next/navigation"; // Import useRouter
 import Cookies from "js-cookie";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default function Home() {
   const [bookList, setBookList] = useState([]);
@@ -67,10 +69,9 @@ export default function Home() {
 
           {/* User Profile Icon */}
           <button
-            onClick={() => router.push("/profile")}
-            className="text-white hover:text-indigo-400 transition duration-300"
-          >
-            <i className="fas fa-user-circle text-3xl"></i>
+          onClick={() => router.push(`/user/2`)}   //given dummy for user 
+          className="text-white hover:text-indigo-400 transition duration-300">
+          <FontAwesomeIcon icon={faUserCircle} className="text-3xl" />
           </button>
         </div>
       </nav>
@@ -114,7 +115,7 @@ export default function Home() {
                   <img
                     src={book.image_url?book.image_url:defaultImage}
                     alt={book.title}
-                    className="w-full h-96 object-cover rounded-lg shadow-md" // Adjusted book size
+                    className="w-30 h-100 object-cover rounded-lg shadow-md" // Adjusted book size
                   />
                   <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
                   <p className="text-sm text-gray-500">{book.author_name}</p>
@@ -126,16 +127,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      {/* Button to Navigate to Login */}
-      <div className="p-6 text-center">
-        <button
-          onClick={() => router.push("/login")}
-          className="p-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 shadow-lg transition duration-300"
-        >
-          Go to Login
-        </button>
-      </div>
     </div>
   );
 }
