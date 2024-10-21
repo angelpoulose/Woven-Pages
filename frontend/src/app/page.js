@@ -49,13 +49,20 @@ export default function Home() {
           </a>
         </div>
 
-        {/* Add Book Button and Profile Icon */}
+        {/* Add Book Button, Go to Login Button, and Profile Icon */}
         <div className="flex items-center space-x-4">
           <button
             onClick={() => router.push("/book/add")}
             className="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300 shadow-lg"
           >
             Add Book
+          </button>
+
+          <button
+            onClick={() => router.push("/login")}
+            className="p-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 shadow-lg transition duration-300"
+          >
+            Go to Login
           </button>
 
           {/* User Profile Icon */}
@@ -82,7 +89,7 @@ export default function Home() {
                       <img
                         src={book.image_url ? book.image_url : defaultImage}
                         alt={book.title}
-                        className="w-full h-64 object-cover rounded-lg shadow-md"
+                        className="w-full h-96 object-cover rounded-lg shadow-md" // Adjusted book size
                       />
                       <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
                       <p className="text-sm text-gray-500">{book.author_name}</p>
@@ -107,7 +114,7 @@ export default function Home() {
                   <img
                     src={book.image_url?book.image_url:defaultImage}
                     alt={book.title}
-                    className="w-full h-64 object-cover rounded-lg shadow-md"
+                    className="w-full h-96 object-cover rounded-lg shadow-md" // Adjusted book size
                   />
                   <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
                   <p className="text-sm text-gray-500">{book.author_name}</p>
