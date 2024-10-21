@@ -13,6 +13,9 @@ export default function Book() {
     const [editionList, setEditionList] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [review, setReview] = useState(null);
+    const [newReview, setNewReview] = useState(""); // State for the new review text
+    const [rating, setRating] = useState(0); // State for the new review rating
+    const [showReviewForm, setShowReviewForm] = useState(false); // Show review form state
 
     // Fetch data for the specific book
     useEffect(() => {
@@ -56,6 +59,37 @@ export default function Book() {
         }
     }, [id]);
 
+    // Handle the submission of a new review
+    const handleReviewSubmit = (e) => {
+        e.preventDefault();
+
+        const token = Cookies.get('token');
+        if (!token) {
+            alert("You must be logged in to submit a review");
+            return;
+        }
+
+        axios.post(`http://localhost:5000/book/${id}/review`, {
+            user_Review: newReview,
+            rating: rating
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            // On success, refresh the reviews to include the new one
+            setReviews([...reviews, response.data]); // Add the new review to the list
+            setNewReview(""); // Reset the review text box
+            setRating(0); // Reset the rating
+            setShowReviewForm(false); // Hide the form
+        })
+        .catch(error => {
+            console.log(error);
+            alert("Failed to submit the review. Please try again.");
+        });
+    };
+
     return (
         <div className="min-h-screen bg-gray-900 text-white">
             <Head>
@@ -68,19 +102,23 @@ export default function Book() {
                         <div className="flex flex-col lg:flex-row items-start lg:items-center lg:space-x-8">
                             {/* Book Image Section */}
                             <div className="w-full lg:w-1/4 mb-6 lg:mb-0">
-                            {book.image_url ? (
-                                <img
-                                src={book.image_url}
-                                alt={book.title}
-                                className="w-full h-auto max-h-[400px] object-cover rounded-lg shadow-md"
-                                style={{ aspectRatio: '2 / 3' }} // Ensures the image maintains a book-like 2:3 ratio
-                                />
-                            ) : (
-                            <div className="w-full h-[400px] bg-gray-700 rounded-lg flex items-center justify-center text-gray-500"
-                            style={{ aspectRatio: '2 / 3' }} // Keeps the placeholder in book aspect ratio as well
-                            >No Image Available</div>
-                             )}
-                             </div>
+    {book.image_url ? (
+        <img
+            src={book.image_url}
+            alt={book.title}
+            className="w-full h-auto max-h-[400px] object-cover rounded-lg shadow-md"
+            style={{ aspectRatio: '2 / 3' }} // Ensures the image maintains a book-like 2:3 ratio
+        />
+    ) : (
+        <div 
+            className="w-full h-[400px] bg-gray-700 rounded-lg flex items-center justify-center text-gray-500"
+            style={{ aspectRatio: '2 / 3' }} // Keeps the placeholder in book aspect ratio as well
+        >
+            No Image Available
+        </div>
+    )}
+</div>
+
 
                             {/* Book Details Section */}
                             <div className="w-full lg:w-3/4">
@@ -142,7 +180,53 @@ export default function Book() {
                                     <a href={`/book/${id}/review`} className="text-indigo-400 hover:text-indigo-500">Edit Review</a>
                                 </>
                             ) : (
-                                <a href={`/book/${id}/review`} className="text-indigo-400 hover:text-indigo-500">Write a Review</a>
+                                <>
+                                    <a
+                                        href="#"
+                                        onClick={() => setShowReviewForm(true)}
+                                        className="text-indigo-400 hover:text-indigo-500"
+                                    >
+                                        Write a Review
+                                    </a>
+
+                                    {showReviewForm && (
+                                        <form onSubmit={handleReviewSubmit} className="mt-4">
+                                            <div className="mb-4">
+                                                <label htmlFor="rating" className="block text-sm">Rating</label>
+                                                <select
+                                                    id="rating"
+                                                    value={rating}
+                                                    onChange={(e) => setRating(e.target.value)}
+                                                    className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
+                                                >
+                                                    <option value={0}>Select Rating</option>
+                                                    <option value={1}>1</option>
+                                                    <option value={2}>2</option>
+                                                    <option value={3}>3</option>
+                                                    <option value={4}>4</option>
+                                                    <option value={5}>5</option>
+                                                </select>
+                                            </div>
+                                            <div className="mb-4">
+                                                <label htmlFor="review" className="block text-sm">Review</label>
+                                                <textarea
+                                                    id="review"
+                                                    value={newReview}
+                                                    onChange={(e) => setNewReview(e.target.value)}
+                                                    className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
+                                                    rows={4}
+                                                    placeholder="Write your review here..."
+                                                />
+                                            </div>
+                                            <button
+                                                type="submit"
+                                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg"
+                                            >
+                                                Submit Review
+                                            </button>
+                                        </form>
+                                    )}
+                                </>
                             )}
                         </div>
 
