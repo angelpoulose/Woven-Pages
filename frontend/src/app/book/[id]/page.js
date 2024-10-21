@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { set } from 'date-fns';
 
 export default function Book() {
     const searchParams = useSearchParams();
@@ -16,6 +17,9 @@ export default function Book() {
     const [newReview, setNewReview] = useState(""); // State for the new review text
     const [rating, setRating] = useState(0); // State for the new review rating
     const [showReviewForm, setShowReviewForm] = useState(false); // Show review form state
+    const [readStatus, setReadStatus] = useState(""); // State for the read status
+    const [startDate, setStartDate] = useState(""); // State for the start date
+    const [finishDate, setFinishDate] = useState(""); // State for the finish date
 
     // Fetch data for the specific book
     useEffect(() => {
@@ -49,6 +53,14 @@ export default function Book() {
                 }
             }).then(response => {
                 setReview(response.data);
+                console.log(response.data);
+                if (response.data) {
+                    setNewReview(response.data.user_Review);
+                    setRating(response.data.rating);
+                    setReadStatus(response.data.read_status);
+                    setStartDate(response.data.start_read);
+                    setFinishDate(response.data.finish_read);
+                }
             }).catch(error => {
                 if (error.response && error.response.status === 404) {
                     setReview(null);
@@ -62,27 +74,30 @@ export default function Book() {
     // Handle the submission of a new review
     const handleReviewSubmit = (e) => {
         e.preventDefault();
+        const formattedStartDate = startDate ? new Date(startDate).toISOString().split('T')[0] : "";
+        const formattedFinishDate = finishDate ? new Date(finishDate).toISOString().split('T')[0] : "";
 
         const token = Cookies.get('token');
         if (!token) {
             alert("You must be logged in to submit a review");
             return;
         }
-
-        axios.post(`http://localhost:5000/book/${id}/review`, {
-            user_Review: newReview,
-            rating: rating
+        axios.post(`http://localhost:5000/book/${id}/make_review`, {
+            rating: rating,
+            read_status: readStatus,
+            start_read: formattedStartDate,
+            finish_read: formattedFinishDate,
+            user_Review: newReview
         }, {
             headers: {
+                'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${token}`
             }
         })
         .then(response => {
-            // On success, refresh the reviews to include the new one
-            setReviews([...reviews, response.data]); // Add the new review to the list
-            setNewReview(""); // Reset the review text box
-            setRating(0); // Reset the rating
-            setShowReviewForm(false); // Hide the form
+            // Refresh the whole page after a successful submission
+            window.location.reload();
+
         })
         .catch(error => {
             console.log(error);
@@ -172,62 +187,113 @@ export default function Book() {
 
                         {/* User Review Section */}
                         <div className="mt-8">
-                            {review ? (
-                                <>
-                                    <h2 className="text-2xl font-bold text-indigo-400 mb-4">Your Review</h2>
-                                    <p><strong>Rating:</strong> {review.rating}</p>
-                                    <p>{review.user_Review}</p>
-                                    <a href={`/book/${id}/review`} className="text-indigo-400 hover:text-indigo-500">Edit Review</a>
-                                </>
-                            ) : (
-                                <>
-                                    <a
-                                        href="#"
-                                        onClick={() => setShowReviewForm(true)}
-                                        className="text-indigo-400 hover:text-indigo-500"
-                                    >
-                                        Write a Review
-                                    </a>
+                            <>
+                                <a
+                                    href="#"
+                                    onClick={() => setShowReviewForm(true)}
+                                    className="text-indigo-400 hover:text-indigo-500"
+                                >
+                                    {review ? "Edit Review" : "Write a Review"}
+                                </a>
 
-                                    {showReviewForm && (
-                                        <form onSubmit={handleReviewSubmit} className="mt-4">
-                                            <div className="mb-4">
-                                                <label htmlFor="rating" className="block text-sm">Rating</label>
-                                                <select
-                                                    id="rating"
-                                                    value={rating}
-                                                    onChange={(e) => setRating(e.target.value)}
-                                                    className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
-                                                >
-                                                    <option value={0}>Select Rating</option>
-                                                    <option value={1}>1</option>
-                                                    <option value={2}>2</option>
-                                                    <option value={3}>3</option>
-                                                    <option value={4}>4</option>
-                                                    <option value={5}>5</option>
-                                                </select>
-                                            </div>
-                                            <div className="mb-4">
-                                                <label htmlFor="review" className="block text-sm">Review</label>
-                                                <textarea
-                                                    id="review"
-                                                    value={newReview}
-                                                    onChange={(e) => setNewReview(e.target.value)}
-                                                    className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
-                                                    rows={4}
-                                                    placeholder="Write your review here..."
-                                                />
-                                            </div>
-                                            <button
-                                                type="submit"
-                                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg"
+                                {showReviewForm && (
+                                    <form onSubmit={handleReviewSubmit} className="mt-4">
+                                        <div className="mb-4">
+                                            <label htmlFor="rating" className="block text-sm">Rating</label>
+                                            <select
+                                                id="rating"
+                                                value={rating}
+                                                onChange={(e) => setRating(e.target.value)}
+                                                className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
                                             >
-                                                Submit Review
-                                            </button>
-                                        </form>
-                                    )}
-                                </>
-                            )}
+                                                <option value={0}>Select Rating</option>
+                                                <option value={1}>1</option>
+                                                <option value={2}>2</option>
+                                                <option value={3}>3</option>
+                                                <option value={4}>4</option>
+                                                <option value={5}>5</option>
+                                            </select>
+                                        </div>
+                                        <div className="mb-4">
+                                            <label htmlFor="review" className="block text-sm">Review</label>
+                                            <textarea
+                                                id="review"
+                                                value={newReview}
+                                                onChange={(e) => setNewReview(e.target.value)}
+                                                className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
+                                                rows={4}
+                                                placeholder="Write your review here..."
+                                            />
+                                        </div>
+                                        <div className="mb-4">
+                                            <label htmlFor="readStatus" className="block text-sm">Read Status</label>
+                                            <select
+                                                id="readStatus"
+                                                value={readStatus}
+                                                onChange={(e) => setReadStatus(e.target.value)}
+                                                className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
+                                            >
+                                                <option value="">Select Status</option>
+                                                <option value="To Read">To Read</option>
+                                                <option value="Reading">Reading</option>
+                                                <option value="Read">Read</option>
+                                            </select>
+                                        </div>
+                                        <div className="mb-4">
+                                            <label htmlFor="startDate" className="block text-sm">Start Date</label>
+                                            <input
+                                                type="date"
+                                                id="startDate"
+                                                value={startDate ? new Date(startDate).toISOString().split('T')[0] : ""}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                                className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
+                                            />
+                                        </div>
+                                        <div className="mb-4">
+                                            <label htmlFor="finishDate" className="block text-sm">Finish Date</label>
+                                            <input
+                                                type="date"
+                                                id="finishDate"
+                                                value={finishDate ? new Date(finishDate).toISOString().split('T')[0] : ""}
+                                                onChange={(e) => setFinishDate(e.target.value)}
+                                                className="mt-2 w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-white"
+                                            />
+                                        </div>
+                                        <button
+                                            type="submit"
+                                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg"
+                                        >
+                                            Submit Review
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const token = Cookies.get('token');
+                                                if (!token) {
+                                                    alert("You must be logged in to delete a review");
+                                                    return;
+                                                }
+                                                axios.delete(`http://localhost:5000/book/${id}/delete_review`, {
+                                                    headers: {
+                                                        Authorization: `Bearer ${token}`
+                                                    }
+                                                })
+                                                .then(response => {
+                                                    // Refresh the whole page after a successful deletion
+                                                    window.location.reload();
+                                                })
+                                                .catch(error => {
+                                                    console.log(error);
+                                                    alert("Failed to delete the review. Please try again.");
+                                                });
+                                            }}
+                                            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg mt-4"
+                                        >
+                                            Delete Review
+                                        </button>
+                                    </form>
+                                )}
+                            </>
                         </div>
 
                         {/* All Reviews Section */}
@@ -238,7 +304,7 @@ export default function Book() {
                                     reviews.map((review, index) => (
                                         <li key={index} className="bg-gray-800 p-4 rounded-lg shadow-md">
                                             <a href={`/user/${review.reviewer}`} className="text-indigo-300 hover:text-indigo-400">{review.username}</a>
-                                            <p><strong>Rating:</strong> {review.rating}</p>
+                                            <p><strong>Rating:</strong> {review.rating?review.rating:"Not Rated"}</p>
                                             <p>{review.user_Review}</p>
                                         </li>
                                     ))

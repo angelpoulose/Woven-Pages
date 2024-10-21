@@ -34,7 +34,7 @@ export default function Auth() {
     formDataToSend.append('password', formData.password);
     if (!isLogin) {
       formDataToSend.append('name', formData.name);
-      formDataToSend.append('dob', formData.dateOfBirth);
+      formDataToSend.append('dob', formData.dateOfBirth ? formData.dateOfBirth.toISOString().split('T')[0] : '');
     }
 
     const url = isLogin ? 'http://localhost:5000/auth/login' : 'http://localhost:5000/auth/register';

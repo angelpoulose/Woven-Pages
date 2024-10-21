@@ -21,15 +21,10 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register',methods=['POST'])
 def register():
-    print(request.form)
     username =  request.form.get('username')
     password =  request.form.get('password')
     name = request.form.get('name')
     dob = request.form.get('dob')
-    try:
-        dob = datetime.datetime.strptime(dob, '%a %b %d %Y %H:%M:%S GMT%z (%Z)').date()
-    except ValueError:
-        return jsonify({"error": "Invalid date format"}), 400
     db = get_db()
     error = None
     code = 400

@@ -31,13 +31,20 @@ def view_user_review(book_id):
         return jsonify({"error": "Review not found"}),404
     return jsonify(dict(review))
 
-@bp.route('/book/<int:book_id>/review',methods=['POST'])
+@bp.route('/book/<int:book_id>/make_review',methods=['POST'])
 @login_required
 def review(book_id):
     db = get_db()
     user_id = g.user
     rating = request.form['rating']
-    comment = request.form['comment']
+    comment = request.form['user_Review']
+    read_status = request.form['read_status']
+    start_read = request.form['start_read']
+    finish_read = request.form['finish_read']
+    if not start_read:
+        start_read = None
+    if not finish_read:
+        finish_read = None
 
     error = None
     if not rating:
@@ -51,9 +58,13 @@ def review(book_id):
         return jsonify({"error": error}),400
     
     db.execute(
-        '''INSERT INTO reviews (book,reviewer,rating,user_Review)
-        VALUES (?,?,?,?)''',
-        (book_id,user_id,rating,comment)
+        '''DELETE FROM reviews WHERE book = ? AND reviewer = ?''',
+        (book_id, user_id)
+    )
+    db.execute(
+        '''INSERT INTO reviews (book, reviewer, rating, user_Review, read_status, start_read, finish_read)
+        VALUES (?,?,?,?,?,?,?)''',
+        (book_id, user_id, rating, comment, read_status, start_read, finish_read)
     )
     db.commit()
     return jsonify({"message": "Review added successfully"}),201
@@ -70,49 +81,14 @@ def user_review(user_id):
     ).fetchall()
     return jsonify([dict(row) for row in reviews])
 
-@bp.route('/book/<int:book_id>/review',methods=['DELETE'])
+@bp.route('/book/<int:book_id>/delete_review',methods=['DELETE'])
 @login_required
 def delete_review(book_id):
     db = get_db()
-    user_id = g.user['userID']
+    user_id = g.user
     db.execute(
         '''DELETE FROM reviews WHERE book = ? AND reviewer = ?''',
         (book_id,user_id)
     )
     db.commit()
     return jsonify({"message": "Review deleted successfully"}),200
-
-@bp.route('/book/<int:book_id>/review',methods=['PUT'])
-@login_required
-def update_review(book_id):
-    db = get_db()
-    user_id = g.user['userID']
-    rating = request.form['rating']
-    comment = request.form['comment']
-    original_values = db.execute(
-        '''SELECT * FROM reviews WHERE book = ? AND reviewer = ?''',
-        (book_id,user_id)
-    ).fetchone()
-
-    error = None
-    if not rating:
-        error = 'Rating is required'
-    elif not comment:
-        error = 'Comment is required'
-    elif len(comment)>=1000:
-        error = 'Comment is too long'
-
-    if error is not None:
-        return jsonify({"error": error}),400
-    
-    for key in request.form.keys():
-        if request.form[key] is None:
-            request.form[key] = original_values[key]
-
-    db.execute(
-        '''UPDATE reviews SET rating = ?, user_Review = ?
-        WHERE book = ? AND reviewer = ?''',
-        (rating,comment,book_id,user_id)
-    )
-    db.commit()
-    return jsonify({"message": "Review updated successfully"}),200
