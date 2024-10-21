@@ -1,9 +1,9 @@
 from flask import (
-    Blueprint, request, jsonify
+    Blueprint, request, jsonify,g
 )
 from werkzeug.exceptions import abort
 
-from backend.auth import admin_required
+from backend.auth import admin_required, login_required
 from backend.db import get_db
 
 bp = Blueprint('website',__name__)
@@ -22,6 +22,25 @@ def view_book():
         ORDER BY average_rating DESC LIMIT 10'''
     ).fetchall()
     #convert rows to a list of dictionaries
+    return jsonify([dict(row) for row in books])
+
+@bp.route('/user_books')
+@login_required
+def user_books():
+    db = get_db()
+    books = db.execute(
+        '''SELECT books.*,
+        authors.first_name || ' ' || authors.last_name AS author_name,
+        reviews.read_status AS read_status,
+        AVG(reviews.rating) AS average_rating
+        FROM books
+        JOIN reviews ON books.bookID = reviews.book
+        JOIN authors ON books.author = authors.authorID
+        WHERE reviews.reviewer = ?
+        GROUP BY books.bookID, authors.first_name, authors.last_name
+        ORDER BY average_rating DESC LIMIT 10''',
+        (g.user,)
+    ).fetchall()
     return jsonify([dict(row) for row in books])
 
 @bp.route('/book/<int:book_id>')

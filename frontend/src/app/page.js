@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css"; // Import datepicker styles
 import { useRouter } from "next/navigation"; // Import useRouter
+import Cookies from "js-cookie";
 
 
 export default function Home() {
   const [bookList, setBookList] = useState([]);
   const [toReadBooks, setToRead] = useState([]); //To read has to be added
-
   const router = useRouter();
+  const defaultImage = "https://d827xgdhgqbnd.cloudfront.net/wp-content/uploads/2016/04/09121712/book-cover-placeholder.png";
 
   useEffect(() => {
     axios
@@ -21,6 +22,18 @@ export default function Home() {
       .catch((error) => {
         console.log(error);
       });
+      const token = Cookies.get("token");
+      if (token){
+        axios.get("http://localhost:5000/user_books", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then((response) => {
+          setToRead(response.data);
+        }).catch((error) => {
+          console.error(error.status);
+        })
+      }
   }, []);
 
   return (
@@ -56,28 +69,31 @@ export default function Home() {
       </nav>
 
       {/* "To Read" Section */}
-      <section className="p-6">
-        <h2 className="text-4xl font-bold text-indigo-400 mb-4 tracking-wider">To Read</h2>
-        <div className="flex space-x-6 overflow-x-auto pb-4">
-          {toReadBooks.length > 0 ? (
-            toReadBooks.map((book, index) => (
-              <a href={`/book/${book.bookID}`} key={index}>
-                <div className="flex-shrink-0 w-44 text-center transition transform hover:scale-105">
-                  <img
-                    src={book.image_url} // Assuming `image_url` is correct for toReadBooks
-                    alt={book.title}
-                    className="w-44 h-64 object-cover rounded-lg shadow-md"
-                  />
-                  <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
-                  <p className="text-sm text-gray-500">{book.author}</p>
-                </div>
-              </a>
-            ))
-          ) : (
-            <p className="text-gray-400">Loading...</p>
-          )}
-        </div>
-      </section>
+      {
+        toReadBooks.length > 0 ? (
+          <section className="p-6">
+            <h2 className="text-4xl font-bold text-indigo-400 mb-4 tracking-wider">To Read</h2>
+            {/* Change to Grid Layout */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {toReadBooks.map((book, index) => (
+                book.read_status === "To Read" ? (
+                  <a href={`/book/${book.bookID}`} key={index}>
+                    <div className="text-center transition transform hover:scale-105">
+                      <img
+                        src={book.image_url ? book.image_url : defaultImage}
+                        alt={book.title}
+                        className="w-full h-64 object-cover rounded-lg shadow-md"
+                      />
+                      <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
+                      <p className="text-sm text-gray-500">{book.author_name}</p>
+                    </div>
+                  </a>
+                ) : null
+              ))}
+            </div>
+          </section>
+        ) : null
+      }
 
       {/* "Recommendations" Section */}
       <section className="p-6">
@@ -89,7 +105,7 @@ export default function Home() {
               <a href={`/book/${book.bookID}`} key={index}>
                 <div className="text-center transition transform hover:scale-105">
                   <img
-                    src={book.image_url}
+                    src={book.image_url?book.image_url:defaultImage}
                     alt={book.title}
                     className="w-full h-64 object-cover rounded-lg shadow-md"
                   />
