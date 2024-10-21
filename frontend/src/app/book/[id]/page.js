@@ -68,18 +68,19 @@ export default function Book() {
                         <div className="flex flex-col lg:flex-row items-start lg:items-center lg:space-x-8">
                             {/* Book Image Section */}
                             <div className="w-full lg:w-1/4 mb-6 lg:mb-0">
-                                {book.image_url ? (
-                                    <img
-                                        src={book.image_url}
-                                        alt={book.title}
-                                        className="w-full h-auto object-cover rounded-lg shadow-md"
-                                    />
-                                ) : (
-                                    <div className="w-full h-64 bg-gray-700 rounded-lg flex items-center justify-center text-gray-500">
-                                        No Image Available
-                                    </div>
-                                )}
-                            </div>
+                            {book.image_url ? (
+                                <img
+                                src={book.image_url}
+                                alt={book.title}
+                                className="w-full h-auto max-h-[400px] object-cover rounded-lg shadow-md"
+                                style={{ aspectRatio: '2 / 3' }} // Ensures the image maintains a book-like 2:3 ratio
+                                />
+                            ) : (
+                            <div className="w-full h-[400px] bg-gray-700 rounded-lg flex items-center justify-center text-gray-500"
+                            style={{ aspectRatio: '2 / 3' }} // Keeps the placeholder in book aspect ratio as well
+                            >No Image Available</div>
+                             )}
+                             </div>
 
                             {/* Book Details Section */}
                             <div className="w-full lg:w-3/4">
