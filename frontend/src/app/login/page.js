@@ -1,4 +1,3 @@
-// pages/auth.js
 "use client";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
@@ -55,8 +54,7 @@ export default function Auth() {
       } else {
         cookies.set('token', response.data.token, { path: '/' });
         alert("Login successful");
-        // After successful login or registration, redirect to another page (e.g., /dashboard)
-        router.push('/'); // Replace '/dashboard' with the actual path of the page you want to navigate to
+        router.push('/'); // Redirect after successful login or registration
       }
 
     })
@@ -67,67 +65,78 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-black text-white">
-      <h2 className="text-2xl mb-4">{isLogin ? "LOG IN" : "SIGN UP"}</h2>
-      <p className="mb-6 text-sm">
-        {isLogin ? "Not registered yet? " : "Already Registered? "}
-        <button
-          onClick={() => setIsLogin(!isLogin)}
-          className="text-blue-500"
-        >
-          {isLogin ? "Sign up here." : "Log in here."}
-        </button>
-      </p>
-      <form onSubmit={handleSubmit} className="flex flex-col w-72">
-        {!isLogin && (
-          <input
-            className="p-2 mb-4 rounded border border-white bg-black text-white"
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-        )}
-        <input
-          className="p-2 mb-4 rounded border border-white bg-black text-white"
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <input
-          className="p-2 mb-4 rounded border border-white bg-black text-white"
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        {!isLogin && (
-          <div className="p-2 mb-4 rounded border border-white bg-black text-white">
-            <DatePicker
-              selected={formData.dateOfBirth}
-              onChange={handleDateChange}
-              dateFormat="yyyy-MM-dd"
-              showYearDropdown
-              showMonthDropdown
-              dropdownMode="select"
-              maxDate={new Date()} // Limit to current date or earlier
-              placeholderText="Select Date of Birth"
-              className="w-full p-2 bg-black text-white border border-white rounded"
+    <div className="min-h-screen bg-gradient-to-b from-gray-800 via-gray-900 to-black flex items-center justify-center text-white">
+      <div className="bg-gray-900 p-8 rounded-lg shadow-lg max-w-md w-full">
+        <h2 className="text-3xl font-bold mb-6 text-center text-indigo-400">
+          {isLogin ? "LOG IN" : "SIGN UP"}
+        </h2>
+
+        <p className="mb-6 text-center text-sm text-gray-400">
+          {isLogin ? "Not registered yet?" : "Already Registered?"}{" "}
+          <button
+            onClick={() => setIsLogin(!isLogin)}
+            className="text-indigo-500 hover:text-indigo-300 transition duration-300"
+          >
+            {isLogin ? "Sign up here." : "Log in here."}
+          </button>
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {!isLogin && (
+            <input
+              className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-500"
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
             />
-          </div>
-        )}
-        <button
-          type="submit"
-          className="p-2 bg-white text-black rounded hover:bg-gray-200 transition duration-300"
-        >
-          {isLogin ? "Log In" : "Sign Up"}
-        </button>
-      </form>
-      {error && <p className="text-red-500 mt-4">{error}</p>}
+          )}
+          <input
+            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-500"
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-500"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          {!isLogin && (
+            <div className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600">
+              <DatePicker
+                selected={formData.dateOfBirth}
+                onChange={handleDateChange}
+                dateFormat="yyyy-MM-dd"
+                showYearDropdown
+                showMonthDropdown
+                dropdownMode="select"
+                maxDate={new Date()} // Limit to current date or earlier
+                placeholderText="Select Date of Birth"
+                className="w-full p-2 bg-gray-800 text-white border border-gray-600 rounded"
+                required
+              />
+            </div>
+          )}
+          <button
+            type="submit"
+            className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold p-3 rounded-lg transition duration-300 shadow-lg"
+          >
+            {isLogin ? "Log In" : "Sign Up"}
+          </button>
+        </form>
+
+        {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+      </div>
     </div>
   );
 }
