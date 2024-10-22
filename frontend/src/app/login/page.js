@@ -6,6 +6,7 @@ import cookies from "js-cookie";
 import { useRouter } from "next/navigation"; // Import useRouter
 import "react-datepicker/dist/react-datepicker.css"; // Import datepicker styles
 
+
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(false); // State to toggle between login and signup
   const [formData, setFormData] = useState({
