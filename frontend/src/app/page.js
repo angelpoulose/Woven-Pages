@@ -6,8 +6,15 @@ import "react-datepicker/dist/react-datepicker.css"; // Import datepicker styles
 import { useRouter } from "next/navigation"; // Import useRouter
 import Cookies from "js-cookie";
 
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { Poppins } from 'next/font/google';
+
+const poppins = Poppins({
+  weight: ['100','200','300', '600',],
+  subsets: ['latin'],
+});
 
 export default function Home() {
   const [bookList, setBookList] = useState([]);
@@ -39,8 +46,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white font-sans">
-      {/* Navigation Bar */}
+    <div className={`min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white ${poppins.className}`}>      {/* Navigation Bar */}
       <nav className="flex justify-between items-center p-6 bg-black bg-opacity-70 shadow-md">
         <div className="flex space-x-8 text-lg font-semibold">
           <a href="/" className="text-white hover:text-indigo-400 transition duration-300">
