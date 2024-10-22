@@ -112,7 +112,7 @@ export default function Home() {
                       <img
                         src={book.image_url ? book.image_url : defaultImage}
                         alt={book.title}
-                        className="w-full h-96 object-cover rounded-lg shadow-md" // Adjusted book size
+                        className="mx-auto w-30 h-100 object-cover rounded-lg shadow-md"  // Adjusted book size
                       />
                       <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
                       <p className="text-sm text-gray-500">{book.author_name}</p>
@@ -129,15 +129,15 @@ export default function Home() {
       <section className="p-6">
         <h2 className="text-4xl font-bold text-indigo-400 mb-4 tracking-wider">Recommendations</h2>
         {/* Change to Grid Layout */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {bookList.length > 0 ? (
-            bookList.map((book, index) => (
-              <a href={`/book/${book.bookID}`} key={index}>
-                <div className="text-center transition transform hover:scale-105">
-                  <img
-                    src={book.image_url?book.image_url:defaultImage}
-                    alt={book.title}
-                    className="w-30 h-100 object-cover rounded-lg shadow-md" // Adjusted book size
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {bookList.length > 0 ? (
+              bookList.map((book, index) => (
+                <a href={`/book/${book.bookID}`} key={index}>
+            <div className="text-center transition transform hover:scale-105">
+              <img
+                src={book.image_url ? book.image_url : defaultImage}
+                alt={book.title}
+                className="mx-auto w-30 h-100 object-cover rounded-lg shadow-md" // Centered and adjusted book size
                   />
                   <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
                   <p className="text-sm text-gray-500">{book.author_name}</p>
