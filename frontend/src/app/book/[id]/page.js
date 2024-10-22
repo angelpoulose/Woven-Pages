@@ -334,22 +334,35 @@ export default function Book() {
                         </div>
 
                         {/* All Reviews Section */}
-                        <div className="mt-8">
-                            <h2 className="text-2xl font-bold text-indigo-400 mb-4">Reviews</h2>
-                            <ul className="space-y-4">
-                                {reviews.length > 0 ? (
-                                    reviews.map((review, index) => (
-                                        <li key={index} className="bg-gray-800 p-4 rounded-lg shadow-md">
-                                            <a href={`/user/${review.reviewer}`} className="text-indigo-300 hover:text-indigo-400">{review.username}</a>
-                                            <p><strong>Rating:</strong> {review.rating?review.rating:"Not Rated"}</p>
-                                            <p>{review.user_Review}</p>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <p>No reviews yet</p>
-                                )}
-                            </ul>
-                        </div>
+<div className="mt-8">
+    <h2 className="text-2xl font-bold text-indigo-400 mb-4">Reviews</h2>
+    <ul className="space-y-4">
+        {reviews.length > 0 ? (
+            reviews.map((review, index) => (
+                <li key={index} className="bg-gray-800 p-4 rounded-lg shadow-md">
+                    <a href={`/user/${review.reviewer}`} className="text-indigo-300 hover:text-indigo-400">{review.username}</a>
+                    <p><strong>Rating:</strong> {review.rating ? review.rating : "Not Rated"}</p>
+                    <p>{review.user_Review}</p>
+                </li>
+            ))
+        ) : (
+            <p>No reviews yet</p>
+        )}
+    </ul>
+</div>
+
+{/* Update Book Section */}
+{book && (
+    <div className="mt-8 text-center">
+        <a
+            href={`/book/${id}/update`}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg"
+        >
+            Update Book
+        </a>
+    </div>
+)}
+
                     </>
                 ) : (
                     <p className="text-center">Loading...</p>
