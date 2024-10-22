@@ -138,3 +138,8 @@ def admin_required(view):
             return jsonify({"error":"Invalid authentication token"}), 401
         return view(*args,**kwargs)
     return wrapped_view
+
+@bp.route('/user',methods=['GET'])
+@login_required
+def user():
+    return jsonify({"userID":g.user}),200
