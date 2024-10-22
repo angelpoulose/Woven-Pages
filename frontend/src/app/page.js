@@ -7,6 +7,15 @@ import { useRouter } from "next/navigation"; // Import useRouter
 import Cookies from "js-cookie";
 
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { Poppins } from 'next/font/google';
+
+const poppins = Poppins({
+  weight: ['100','200','300', '600',],
+  subsets: ['latin'],
+});
+
 export default function Home() {
   const [bookList, setBookList] = useState([]);
   const [toReadBooks, setToRead] = useState([]); //To read has to be added
@@ -37,8 +46,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white font-sans">
-      {/* Navigation Bar */}
+    <div className={`min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white ${poppins.className}`}>      {/* Navigation Bar */}
       <nav className="flex justify-between items-center p-6 bg-black bg-opacity-70 shadow-md">
         <div className="flex space-x-8 text-lg font-semibold">
           <a href="/" className="text-white hover:text-indigo-400 transition duration-300">
@@ -47,12 +55,9 @@ export default function Home() {
           <a href="/books" className="text-white hover:text-indigo-400 transition duration-300">
             BOOKS
           </a>
-          <a href="/authors" className="text-white hover:text-indigo-400 transition duration-300">
-            AUTHORS
-          </a>
         </div>
 
-        {/* Add Book Button and Profile Icon */}
+        {/* Add Book Button, Go to Login Button, and Profile Icon */}
         <div className="flex items-center space-x-4">
           <button
             onClick={() => router.push("/book/add")}
@@ -61,12 +66,18 @@ export default function Home() {
             Add Book
           </button>
 
+          <button
+            onClick={() => router.push("/login")}
+            className="p-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 shadow-lg transition duration-300"
+          >
+            Go to Login
+          </button>
+
           {/* User Profile Icon */}
           <button
-            onClick={() => router.push("/profile")}
-            className="text-white hover:text-indigo-400 transition duration-300"
-          >
-            <i className="fas fa-user-circle text-3xl"></i>
+          onClick={() => router.push(`/user/2`)}   //given dummy for user 
+          className="text-white hover:text-indigo-400 transition duration-300">
+          <FontAwesomeIcon icon={faUserCircle} className="text-3xl" />
           </button>
         </div>
       </nav>
@@ -85,7 +96,7 @@ export default function Home() {
                       <img
                         src={book.image_url ? book.image_url : defaultImage}
                         alt={book.title}
-                        className="w-full h-64 object-cover rounded-lg shadow-md"
+                        className="w-full h-96 object-cover rounded-lg shadow-md" // Adjusted book size
                       />
                       <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
                       <p className="text-sm text-gray-500">{book.author_name}</p>
@@ -110,7 +121,7 @@ export default function Home() {
                   <img
                     src={book.image_url?book.image_url:defaultImage}
                     alt={book.title}
-                    className="w-full h-64 object-cover rounded-lg shadow-md"
+                    className="w-30 h-100 object-cover rounded-lg shadow-md" // Adjusted book size
                   />
                   <h3 className="mt-3 text-lg text-gray-300 font-medium">{book.title}</h3>
                   <p className="text-sm text-gray-500">{book.author_name}</p>
@@ -122,16 +133,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      {/* Button to Navigate to Login */}
-      <div className="p-6 text-center">
-        <button
-          onClick={() => router.push("/login")}
-          className="p-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 shadow-lg transition duration-300"
-        >
-          Go to Login
-        </button>
-      </div>
     </div>
   );
 }

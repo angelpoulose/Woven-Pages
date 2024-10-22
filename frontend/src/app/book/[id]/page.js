@@ -1,11 +1,14 @@
 "use client";
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams,useRouter} from 'next/navigation';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { set } from 'date-fns';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default function Book() {
     const searchParams = useSearchParams();
@@ -20,6 +23,7 @@ export default function Book() {
     const [readStatus, setReadStatus] = useState(""); // State for the read status
     const [startDate, setStartDate] = useState(""); // State for the start date
     const [finishDate, setFinishDate] = useState(""); // State for the finish date
+    const router = useRouter();
 
     // Fetch data for the specific book
     useEffect(() => {
@@ -110,7 +114,40 @@ export default function Book() {
             <Head>
                 <title>{book ? book.title : "Loading..."} - Book Details</title>
             </Head>
+             {/* Navigation Bar */}
+             <nav className="flex justify-between items-center p-6 bg-black bg-opacity-70 shadow-md">
+                <div className="flex space-x-8 text-lg font-semibold">
+                    <a href="/" className="text-white hover:text-indigo-400 transition duration-300">
+                        HOME
+                    </a>
+                    <a href="/books" className="text-white hover:text-indigo-400 transition duration-300">
+                        BOOKS
+                    </a>
+                </div>
 
+                <div className="flex items-center space-x-4">
+                    <button
+                        onClick={() => router.push("/book/add")}
+                        className="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300 shadow-lg"
+                    >
+                        Add Book
+                    </button>
+
+                    <button
+                        onClick={() => router.push("/login")}
+                        className="p-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 shadow-lg transition duration-300"
+                    >
+                        Go to Login
+                    </button>
+
+                    <button
+                        onClick={() => router.push(`/user/2`)} // Using dummy ID for now
+                        className="text-white hover:text-indigo-400 transition duration-300"
+                    >
+                        <FontAwesomeIcon icon={faUserCircle} className="text-3xl" />
+                    </button>
+                </div>
+            </nav>
             <main className="container mx-auto p-8">
                 {book ? (
                     <>
