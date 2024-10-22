@@ -109,6 +109,20 @@ export default function Book() {
         });
     };
 
+    const redirect = () => {
+        const token = Cookies.get("token");
+        axios.get("http://localhost:5000/auth/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then((response) => {
+          router.push(`/user/${response.data.userID}`);
+          window.location.reload();
+        }).catch((error) => {
+          console.error(error.status);
+        });
+      };
+
     return (
         <div className="min-h-screen bg-gray-900 text-white">
             <Head>
@@ -141,7 +155,7 @@ export default function Book() {
                     </button>
 
                     <button
-                        onClick={() => router.push(`/user/2`)} // Using dummy ID for now
+                        onClick={redirect} // Using dummy ID for now
                         className="text-white hover:text-indigo-400 transition duration-300"
                     >
                         <FontAwesomeIcon icon={faUserCircle} className="text-3xl" />

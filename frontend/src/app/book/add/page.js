@@ -75,6 +75,20 @@ export default function AddBook() {
     newGenres[index] = value;
     setFormData({ ...formDataToSend, genre: newGenres });
   };
+  
+  const redirect = () => {
+    const token = Cookies.get("token");
+    axios.get("http://localhost:5000/auth/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
+      router.push(`/user/${response.data.userID}`);
+      window.location.reload();
+    }).catch((error) => {
+      console.error(error.status);
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -105,7 +119,7 @@ export default function AddBook() {
           </button>
 
           <button
-            onClick={() => router.push(`/user/2`)} // Using the router to navigate to a user profile (dummy user ID)
+            onClick={redirect} // Using the router to navigate to a user profile (dummy user ID)
             className="text-white hover:text-indigo-400 transition duration-300"
           >
             <FontAwesomeIcon icon={faUserCircle} className="text-3xl" />
